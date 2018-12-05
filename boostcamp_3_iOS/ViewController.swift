@@ -25,26 +25,31 @@ class ViewController: UIViewController {
     }
     
     @IBAction func flteringButton(_ sender: Any) {
-        print("asdgasdgasdg")
         let actionSheet = UIAlertController(title: "정렬 방식 선택", message:"영화를 어떤 방식으로 정렬할까요?", preferredStyle: .actionSheet)
         
+        //예매율 , 큐레이션, 개봉일 정렬
         let reservationRate = UIAlertAction(title: "예매율", style: .default) { [weak self] (action) in
-            
             guard let `self` = self else {return}
             
             let sorted = self.movies.sorted(by: { $0.reservation_rate > $1.reservation_rate })
             self.movies = sorted
             self.tableview.reloadData()
         }
-        let quaration = UIAlertAction(title: "큐레이션", style: .default) { (action) in
+        let quaration = UIAlertAction(title: "큐레이션", style: .default) { [weak self](action) in
+            guard let `self` = self else {return}
             
+            let sorted = self.movies.sorted(by: { $0.reservation_grade < $1.reservation_grade })
+            self.movies = sorted
+            self.tableview.reloadData()
         }
-        let openTime = UIAlertAction(title: "개봉일", style: .default) { (action) in
+        let openTime = UIAlertAction(title: "개봉일", style: .default) { [weak self] (action) in
+            guard let `self` = self else {return}
             
+            let sorted = self.movies.sorted(by: { $0.date < $1.date })
+            self.movies = sorted
+            self.tableview.reloadData()
         }
-        let cancle = UIAlertAction(title: "취소", style: .cancel) { (action) in
-            
-        }
+        let cancle = UIAlertAction(title: "취소", style: .cancel)
         
         actionSheet.addAction(reservationRate)
         actionSheet.addAction(quaration)
