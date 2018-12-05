@@ -12,6 +12,11 @@ class tableviewCell: UITableViewCell {
 
     @IBOutlet var movieImage: UIImageView!
     @IBOutlet var movieTitle: UILabel!
+    @IBOutlet var movieReserRate: UILabel!
+    @IBOutlet var movieRate: UILabel!
+    @IBOutlet var movieGrade: UILabel!
+    @IBOutlet var movieDate: UILabel!
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()
