@@ -21,7 +21,9 @@ class ViewController: UIViewController {
         tableview.delegate = self
         
         setupNavigation()
-        getJsonFromURL()
+        
+        let url = "http://connect-boxoffice.run.goorm.io/movies"
+        getJsonFromURL(getURL: url)
     }
     
     @IBAction func flteringButton(_ sender: Any) {
@@ -31,24 +33,24 @@ class ViewController: UIViewController {
         let reservationRate = UIAlertAction(title: "예매율", style: .default) { [weak self] (action) in
             guard let `self` = self else {return}
             
-            let sorted = self.movies.sorted(by: { $0.reservation_rate > $1.reservation_rate })
-            self.movies = sorted
-            self.tableview.reloadData()
+            let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=0"
+            self.getJsonFromURL(getURL: url)
         }
         let quaration = UIAlertAction(title: "큐레이션", style: .default) { [weak self](action) in
             guard let `self` = self else {return}
             
-            let sorted = self.movies.sorted(by: { $0.reservation_grade < $1.reservation_grade })
-            self.movies = sorted
-            self.tableview.reloadData()
+            let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=1"
+            self.getJsonFromURL(getURL: url)
+            
+            
         }
         let openTime = UIAlertAction(title: "개봉일", style: .default) { [weak self] (action) in
             guard let `self` = self else {return}
             
-            let sorted = self.movies.sorted(by: { $0.date < $1.date })
-            self.movies = sorted
-            self.tableview.reloadData()
+            let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=2"
+            self.getJsonFromURL(getURL: url)
         }
+        
         let cancle = UIAlertAction(title: "취소", style: .cancel)
         
         actionSheet.addAction(reservationRate)
@@ -66,8 +68,8 @@ class ViewController: UIViewController {
         navigationController?.navigationBar.barTintColor = barColor
     }
     
-    func getJsonFromURL() {
-        guard let url = URL(string: "http://connect-boxoffice.run.goorm.io/movies") else {return}
+    func getJsonFromURL(getURL: String) {
+        guard let url = URL(string: getURL) else {return}
         URLSession.shared.dataTask(with: url) { [weak self] (datas, response, error) in
             guard let data = datas else {return}
             do {
@@ -94,8 +96,7 @@ extension ViewController: UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cellId") as! tableviewCell
         let movie = movies[indexPath.row]
-        
-        //date는 formatt형식 바꾸기
+    
         cell.movieDate.text = "개봉일: \(movie.date)"
         cell.movieReserRate.text = "예매율:\(movie.reservation_rate)"
         cell.movieGrade.text = "예매순위:\(movie.reservation_grade)"
@@ -111,8 +112,21 @@ extension ViewController: UITableViewDataSource{
 }
 
 extension ViewController: UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 120
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let detailmoiveVC = self.storyboard?.instantiateViewController(withIdentifier: "DetailMovie") as! DetailMovieVC
+        
+        let backButton = UIBarButtonItem.init(title: "영화목록", style: UIBarButtonItem.Style.plain, target: nil, action: nil)
+        navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+        
+        detailmoiveVC.navigationTitle = movies[indexPath.row].title
+        detailmoiveVC.id = movies[indexPath.row].id
+        self.navigationController?.pushViewController(detailmoiveVC, animated: true)
+        
     }
 }
 
