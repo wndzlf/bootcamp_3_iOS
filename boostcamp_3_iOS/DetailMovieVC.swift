@@ -26,17 +26,34 @@ struct detailMovie:Decodable {
 }
 
 class DetailMovieVC: UIViewController {
-
-    var navigationTitle: String?
+    
     var id: String?
     var movie:detailMovie?
+    var navigationTitle: String?
+    
+    @IBOutlet var image: UIImageView!
+    @IBOutlet var movieTitle: UILabel!
+    @IBOutlet var date: UILabel!
+    @IBOutlet var genre: UILabel!
+    @IBOutlet var reservation_rate: UILabel!
+    @IBOutlet var user_rating: UILabel!
+    @IBOutlet var audience: UILabel!
+    @IBOutlet var synopsis: UITextView!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupNavigation()
         
         let url = "http://connect-boxoffice.run.goorm.io/movie?id=\(id!)"
         getJsonFromURL(getURL: url)
+    }
+    
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
     }
     
     func setupNavigation() {
@@ -44,7 +61,6 @@ class DetailMovieVC: UIViewController {
     }
     
     func getJsonFromURL(getURL: String) {
-        
         guard let url = URL(string: getURL) else {return}
         
         URLSession.shared.dataTask(with: url) {[weak self] (datas, response, error) in
@@ -52,7 +68,22 @@ class DetailMovieVC: UIViewController {
             do{
                 let detail = try JSONDecoder().decode(detailMovie.self, from: data)
                 guard let `self` = self else {return}
-                self.movie = detail
+                DispatchQueue.global().async {
+                    self.movie = detail
+                    let imageURL = URL(string: detail.image)!
+                    DispatchQueue.main.async {
+                        guard let selectMovie = self.movie else {return}
+                        self.movieTitle.text = selectMovie.title
+                        self.date.text = selectMovie.date
+                        self.genre.text = selectMovie.genre
+                        self.reservation_rate.text = "\(String(describing: selectMovie.reservation_rate))"
+                        self.user_rating.text = "\(String(describing: selectMovie.user_rating))"
+                        self.image.load(url: imageURL)
+                        self.audience.text = "\(String(describing: selectMovie.audience))"
+                        self.synopsis.text = selectMovie.synopsis
+                    }
+                }
+                NotificationCenter.default.post(name: Notification.Name("notification"), object: nil, userInfo: ["movie": detail])
             }catch{
                 print("Error")
             }

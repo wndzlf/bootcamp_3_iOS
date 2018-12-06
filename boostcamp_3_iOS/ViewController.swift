@@ -41,8 +41,6 @@ class ViewController: UIViewController {
             
             let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=1"
             self.getJsonFromURL(getURL: url)
-            
-            
         }
         let openTime = UIAlertAction(title: "개봉일", style: .default) { [weak self] (action) in
             guard let `self` = self else {return}
