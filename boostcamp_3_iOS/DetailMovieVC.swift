@@ -8,6 +8,19 @@
 
 import UIKit
 
+struct superoneLine: Decodable {
+    let comments: [oneLine]
+    let moive_id: String
+}
+
+struct oneLine: Decodable {
+    let rating:Double
+    let timestamp:Double
+    let writer: String
+    let movie_id: String
+    let contents: String
+}
+
 struct detailMovie:Decodable {
     let audience:Int
     let actor:String
@@ -39,6 +52,9 @@ class DetailMovieVC: UIViewController {
     @IBOutlet var user_rating: UILabel!
     @IBOutlet var audience: UILabel!
     @IBOutlet var synopsis: UITextView!
+    @IBOutlet var director: UILabel!
+    @IBOutlet var actor: UILabel!
+    
     
     
     override func viewDidLoad() {
@@ -48,28 +64,49 @@ class DetailMovieVC: UIViewController {
         
         let url = "http://connect-boxoffice.run.goorm.io/movie?id=\(id!)"
         getJsonFromURL(getURL: url)
-    }
-    
-    
-    
-    override func viewWillAppear(_ animated: Bool) {
         
+        let commmentsURL = "http://connect-boxoffice.run.goorm.io/comments?movie_id=\(id!)"
+        print(commmentsURL)
+        getJsonFromCommentURL(getURL: commmentsURL)
     }
     
     func setupNavigation() {
         navigationItem.title = navigationTitle
     }
     
+    func getJsonFromCommentURL(getURL: String) {
+        guard let url = URL(string: getURL) else {return}
+        
+        URLSession.shared.dataTask(with: url) { [weak self] (datas, response, error) in
+            
+            guard let data = datas else {return}
+            
+            do{
+                let one = try JSONDecoder().decode(superoneLine.self, from: data)
+                print("one")
+                print(one)
+                guard let `self` = self else {return}
+                
+                print(one)
+            }catch{
+                print("error")
+            }
+        }.resume()
+    }
+    
     func getJsonFromURL(getURL: String) {
         guard let url = URL(string: getURL) else {return}
         
-        URLSession.shared.dataTask(with: url) {[weak self] (datas, response, error) in
+        URLSession.shared.dataTask(with: url) { [weak self] (datas, response, error) in
             guard let data = datas else {return}
+            
             do{
                 let detail = try JSONDecoder().decode(detailMovie.self, from: data)
+                
                 guard let `self` = self else {return}
+                self.movie = detail
+                
                 DispatchQueue.global().async {
-                    self.movie = detail
                     let imageURL = URL(string: detail.image)!
                     DispatchQueue.main.async {
                         guard let selectMovie = self.movie else {return}
@@ -81,13 +118,15 @@ class DetailMovieVC: UIViewController {
                         self.image.load(url: imageURL)
                         self.audience.text = "\(String(describing: selectMovie.audience))"
                         self.synopsis.text = selectMovie.synopsis
+                        self.director.text = selectMovie.director
+                        self.actor.text = selectMovie.actor
                     }
                 }
-                NotificationCenter.default.post(name: Notification.Name("notification"), object: nil, userInfo: ["movie": detail])
             }catch{
                 print("Error")
             }
         }.resume()
+        
     }
 
 }

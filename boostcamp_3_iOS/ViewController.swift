@@ -80,7 +80,6 @@ class ViewController: UIViewController {
             }catch{
                 print("Error")
             }
-            
         }.resume()
     }
 }
