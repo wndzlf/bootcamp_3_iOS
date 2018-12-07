@@ -70,9 +70,10 @@ class ViewController: UIViewController {
         guard let url = URL(string: getURL) else {return}
         URLSession.shared.dataTask(with: url) { [weak self] (datas, response, error) in
             guard let data = datas else {return}
+            guard let `self` = self else {return}
             do {
                 let order = try JSONDecoder().decode(orderType.self, from: data)
-                guard let `self` = self else {return}
+                
                 self.movies = order.movies
                 DispatchQueue.main.async {
                     self.tableview.reloadData()
@@ -123,7 +124,6 @@ extension ViewController: UITableViewDelegate {
         detailmoiveVC.navigationTitle = movies[indexPath.row].title
         detailmoiveVC.id = movies[indexPath.row].id
         self.navigationController?.pushViewController(detailmoiveVC, animated: true)
-        
     }
 }
 
