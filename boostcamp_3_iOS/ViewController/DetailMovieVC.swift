@@ -65,8 +65,10 @@ class DetailMovieVC: UIViewController {
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
-                
             }catch{
+                let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
+                let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
+                alter.addAction(action)
                 print("error")
             }
         }.resume()
@@ -93,7 +95,6 @@ class DetailMovieVC: UIViewController {
 
 extension DetailMovieVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        print("1")
         if indexPath.section == 0 {
             return 240
         //줄거리 길이에 따라 섹션 height 수정하기
@@ -135,7 +136,6 @@ extension DetailMovieVC: UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId") as! posterCell
-            
             let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
             
             cell.poster.isUserInteractionEnabled = true
@@ -154,9 +154,7 @@ extension DetailMovieVC: UITableViewDataSource{
             return cell
         }else if indexPath.section == 1{
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId1") as! contentsCell
-            cell.content.text = self.movie?.synopsis
-            let height = cell.content.contentSize.height
-            cell.heightAnchor.constraint(equalToConstant: height).isActive = true
+            cell.content.text = self.movie?.synopsis            
             cell.content.isScrollEnabled = false
             cell.content.isEditable = false
             return cell

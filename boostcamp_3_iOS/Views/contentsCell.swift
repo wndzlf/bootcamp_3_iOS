@@ -12,13 +12,9 @@ class contentsCell: UITableViewCell {
 
     @IBOutlet var content: UITextView!
     
-    var heightAnchorOfcontent: NSLayoutConstraint?
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        
-        content.translatesAutoresizingMaskIntoConstraints = false
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
