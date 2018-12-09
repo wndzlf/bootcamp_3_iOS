@@ -405,17 +405,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fyN-r5-HeV">
-                                <rect key="frame" x="0.0" y="71" width="375" height="525"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fyN-r5-HeV">
+                                <rect key="frame" x="0.0" y="70" width="375" height="527"/>
                             </imageView>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wVj-Mf-YiV">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wVj-Mf-YiV">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="75"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mpu-g9-ZAA">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mpu-g9-ZAA">
                                         <rect key="frame" x="16" y="22" width="30" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="30" id="1Ur-zm-diK"/>
+                                            <constraint firstAttribute="height" constant="30" id="N32-KU-pTV"/>
+                                        </constraints>
                                         <state key="normal" title="x">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
@@ -425,14 +426,33 @@
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="75" id="YG6-9X-A7N"/>
+                                    <constraint firstItem="Mpu-g9-ZAA" firstAttribute="leading" secondItem="wVj-Mf-YiV" secondAttribute="leading" constant="16" id="acn-95-165"/>
+                                    <constraint firstItem="Mpu-g9-ZAA" firstAttribute="top" secondItem="wVj-Mf-YiV" secondAttribute="top" constant="22" id="zmV-Es-3WV"/>
+                                </constraints>
                             </view>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Cel-NW-T9n">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cel-NW-T9n">
                                 <rect key="frame" x="0.0" y="592" width="375" height="75"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="75" id="Dr8-zc-Wuu"/>
+                                </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="wVj-Mf-YiV" firstAttribute="top" secondItem="lil-YR-5nR" secondAttribute="top" id="0Vo-Sk-zK6"/>
+                            <constraint firstItem="Cel-NW-T9n" firstAttribute="leading" secondItem="551-3v-6aV" secondAttribute="leading" id="1BO-8J-h1K"/>
+                            <constraint firstItem="wVj-Mf-YiV" firstAttribute="leading" secondItem="551-3v-6aV" secondAttribute="leading" id="AXX-pw-qOh"/>
+                            <constraint firstItem="551-3v-6aV" firstAttribute="bottom" secondItem="fyN-r5-HeV" secondAttribute="bottom" constant="70" id="IUC-GI-odh"/>
+                            <constraint firstItem="fyN-r5-HeV" firstAttribute="leading" secondItem="551-3v-6aV" secondAttribute="leading" id="Kr6-V1-u1X"/>
+                            <constraint firstItem="fyN-r5-HeV" firstAttribute="top" secondItem="551-3v-6aV" secondAttribute="top" constant="50" id="Szu-vN-oys"/>
+                            <constraint firstItem="wVj-Mf-YiV" firstAttribute="trailing" secondItem="551-3v-6aV" secondAttribute="trailing" id="cKj-qz-JRj"/>
+                            <constraint firstItem="fyN-r5-HeV" firstAttribute="trailing" secondItem="551-3v-6aV" secondAttribute="trailing" id="ezt-md-8px"/>
+                            <constraint firstItem="Cel-NW-T9n" firstAttribute="bottom" secondItem="551-3v-6aV" secondAttribute="bottom" id="jh7-e2-XpS"/>
+                            <constraint firstItem="Cel-NW-T9n" firstAttribute="trailing" secondItem="551-3v-6aV" secondAttribute="trailing" id="wOB-u9-hxp"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="551-3v-6aV"/>
                     </view>
                     <connections>

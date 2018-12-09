@@ -18,7 +18,6 @@ class showFullPosterVC: UIViewController {
         self.navigationController?.navigationBar.isHidden = true
     }
     
-
     @IBAction func backController(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
     }

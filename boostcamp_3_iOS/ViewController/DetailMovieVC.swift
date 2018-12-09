@@ -33,8 +33,6 @@ class DetailMovieVC: UIViewController {
         tableView.dataSource = self
         
         tableView.rowHeight = UITableView.automaticDimension
-        
-        
     }
     
     @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer)
@@ -57,8 +55,18 @@ class DetailMovieVC: UIViewController {
         guard let url = URL(string: getURL) else {return}
         
         URLSession.shared.dataTask(with: url) { [weak self] (datas, response, error) in
-            guard let data = datas else {return}
+           
             guard let `self` = self else {return}
+        
+            if error != nil {
+                let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
+                let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
+                alter.addAction(action)
+                self.present(alter, animated: true, completion: nil)
+            }
+            
+            guard let data = datas else {return}
+            
             do{
                 let one = try JSONDecoder().decode(superoneLine.self, from: data)
                 self.comments = one.comments
@@ -69,6 +77,7 @@ class DetailMovieVC: UIViewController {
                 let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
                 let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
                 alter.addAction(action)
+                
                 print("error")
             }
         }.resume()
@@ -77,10 +86,21 @@ class DetailMovieVC: UIViewController {
     func getJsonFromURL(getURL: String) {
         guard let url = URL(string: getURL) else {return}
         URLSession.shared.dataTask(with: url) { [weak self] (datas, response, error) in
+            guard let `self` = self else {return}
+            
+            
+            if error != nil {
+                let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
+                let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
+                alter.addAction(action)
+                self.present(alter, animated: true, completion: nil)
+            }
+            
             guard let data = datas else {return}
+            
             do{
                 let detail = try JSONDecoder().decode(detailMovie.self, from: data)
-                guard let `self` = self else {return}
+                
                 self.movie = detail
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
@@ -154,7 +174,7 @@ extension DetailMovieVC: UITableViewDataSource{
             return cell
         }else if indexPath.section == 1{
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId1") as! contentsCell
-            cell.content.text = self.movie?.synopsis            
+            cell.content.text = self.movie?.synopsis
             cell.content.isScrollEnabled = false
             cell.content.isEditable = false
             return cell

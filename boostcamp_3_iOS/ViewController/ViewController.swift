@@ -69,8 +69,18 @@ class ViewController: UIViewController {
     func getJsonFromURL(getURL: String) {
         guard let url = URL(string: getURL) else {return}
         URLSession.shared.dataTask(with: url) { [weak self] (datas, response, error) in
-            guard let data = datas else {return}
+            
             guard let `self` = self else {return}
+            
+            if error != nil {
+                let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
+                let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
+                alter.addAction(action)
+                self.present(alter, animated: true, completion: nil)
+            }
+            
+            guard let data = datas else {return}
+        
             do {
                 let order = try JSONDecoder().decode(orderType.self, from: data)
                 
@@ -79,8 +89,11 @@ class ViewController: UIViewController {
                     self.tableview.reloadData()
                 }
             }catch{
+                
                 print("Error")
             }
+        
+            
         }.resume()
     }
 }
