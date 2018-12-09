@@ -24,9 +24,8 @@ class DetailMovieVC: UIViewController {
         setupNavigation()
         
         let url = "http://connect-boxoffice.run.goorm.io/movie?id=\(id!)"
-        getJsonFromURL(getURL: url)
-        
         let commmentsURL = "http://connect-boxoffice.run.goorm.io/comments?movie_id=\(id!)"
+        getJsonFromURL(getURL: url)
         getJsonFromCommentURL(getURL: commmentsURL)
         
         tableView.delegate = self
@@ -55,58 +54,55 @@ class DetailMovieVC: UIViewController {
         guard let url = URL(string: getURL) else {return}
         
         URLSession.shared.dataTask(with: url) { [weak self] (datas, response, error) in
-           
-            guard let `self` = self else {return}
-        
-            if error != nil {
-                let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
-                let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
-                alter.addAction(action)
-                self.present(alter, animated: true, completion: nil)
-            }
+           DispatchQueue.main.async {
+                guard let `self` = self else {return}
             
-            guard let data = datas else {return}
-            
-            do{
-                let one = try JSONDecoder().decode(superoneLine.self, from: data)
-                self.comments = one.comments
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
+                if error != nil {
+                    let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
+                    let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
+                    alter.addAction(action)
+                    self.present(alter, animated: true, completion: nil)
                 }
-            }catch{
-                let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
-                let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
-                alter.addAction(action)
-                
-                print("error")
+            
+                guard let data = datas else {return}
+            
+                do{
+                    let one = try JSONDecoder().decode(superoneLine.self, from: data)
+                    self.comments = one.comments
+                    self.tableView.reloadData()
+                }catch{
+                    let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
+                    let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
+                    alter.addAction(action)
+                    print("error")
+                }
             }
         }.resume()
     }
-
+    
     func getJsonFromURL(getURL: String) {
         guard let url = URL(string: getURL) else {return}
         URLSession.shared.dataTask(with: url) { [weak self] (datas, response, error) in
-            guard let `self` = self else {return}
-            
-            
-            if error != nil {
-                let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
-                let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
-                alter.addAction(action)
-                self.present(alter, animated: true, completion: nil)
-            }
-            
-            guard let data = datas else {return}
-            
-            do{
-                let detail = try JSONDecoder().decode(detailMovie.self, from: data)
+            DispatchQueue.main.async {
+                guard let `self` = self else {return}
                 
-                self.movie = detail
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
+                if error != nil {
+                    let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
+                    let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
+                    alter.addAction(action)
+                    self.present(alter, animated: true, completion: nil)
                 }
-            }catch{
-                print("Error")
+                
+                //10번에 1번꼴로 데이터를 받아오지 못함.
+                guard let data = datas else {return}
+                
+                do{
+                    let detail = try JSONDecoder().decode(detailMovie.self, from: data)
+                    self.movie = detail
+                    self.tableView.reloadData()
+                }catch{
+                    print("Error")
+                }
             }
         }.resume()
     }
@@ -183,7 +179,18 @@ extension DetailMovieVC: UITableViewDataSource{
             let comment = self.comments[indexPath.row]
             cell.writer.text = comment.writer
             cell.rating.text = "\(comment.rating)"
-            cell.timestamp.text = "\(comment.timestamp)"
+            
+            
+            let date = Date(timeIntervalSince1970: comment.timestamp)
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.timeZone = TimeZone(abbreviation: "GMT") //Set timezone that you want
+            dateFormatter.locale = NSLocale.current
+            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss" //Specify your format that you want
+            let strDate = dateFormatter.string(from: date)
+            
+
+            cell.timestamp.text = "\(strDate)"
             cell.contents.text = comment.contents
             return cell
         }
