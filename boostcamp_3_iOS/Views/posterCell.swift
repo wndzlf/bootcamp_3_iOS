@@ -9,7 +9,6 @@
 import UIKit
 
 class posterCell: UITableViewCell {
-
     @IBOutlet var poster: UIImageView!
     @IBOutlet var title: UILabel!
     @IBOutlet var date: UILabel!

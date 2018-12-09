@@ -8,46 +8,15 @@
 
 import UIKit
 
-struct oneLine: Decodable {
-    let rating:Double
-    let timestamp:Double
-    let writer: String
-    let movie_id: String
-    let contents: String
-}
-
-struct superoneLine: Decodable {
-    let comments: [oneLine]
-    let movie_id: String
-}
-
-
-struct detailMovie:Decodable {
-    let audience:Int
-    let actor:String
-    let duration:Int
-    let director: String
-    let synopsis: String
-    let genre:String
-    let grade:Int
-    let image:String
-    let reservation_grade:Int
-    let title:String
-    let reservation_rate:Double
-    let user_rating:Double
-    let date:String
-    let id:String
-}
-
 class DetailMovieVC: UIViewController {
     
     var id: String?
-    var movie:detailMovie?
     var navigationTitle: String?
     
-    @IBOutlet var tableView: UITableView!
-    
     var comments = [oneLine]()
+    var movie:detailMovie?
+    
+    @IBOutlet var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,6 +31,22 @@ class DetailMovieVC: UIViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
+        
+        tableView.rowHeight = UITableView.automaticDimension
+        
+        
+    }
+    
+    @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer)
+    {
+        let tappedImage = tapGestureRecognizer.view as! UIImageView
+        
+        let showVC = self.storyboard?.instantiateViewController(withIdentifier: "showFullPosterVC") as! showFullPosterVC
+        
+        self.present(showVC, animated: false) {
+            showVC.fullScreen.image = tappedImage.image
+        }
+        
     }
     
     func setupNavigation() {
@@ -102,18 +87,20 @@ class DetailMovieVC: UIViewController {
                 print("Error")
             }
         }.resume()
-        
     }
+    
 }
 
 extension DetailMovieVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        print("1")
         if indexPath.section == 0 {
-            return 80
+            return 240
+        //줄거리 길이에 따라 섹션 height 수정하기
         }else if indexPath.section == 1{
-            return 120
+            return UITableView.automaticDimension
         }else {
-            return 60
+            return 120
         }
         
     }
@@ -130,6 +117,7 @@ extension DetailMovieVC: UITableViewDelegate {
 }
 
 extension DetailMovieVC: UITableViewDataSource{
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 3
     }
@@ -145,10 +133,17 @@ extension DetailMovieVC: UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         if indexPath.section == 0 {
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId") as! posterCell
+            
+            let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
+            
+            cell.poster.isUserInteractionEnabled = true
+            cell.poster.addGestureRecognizer(tapGestureRecognizer)
+            
             if let movie = self.movie {
+                let url = URL(string: movie.image)!
+                cell.poster.load(url: url)
                 cell.title.text = movie.title
                 cell.date.text = movie.date
                 cell.genre.text = movie.genre
@@ -160,10 +155,13 @@ extension DetailMovieVC: UITableViewDataSource{
         }else if indexPath.section == 1{
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId1") as! contentsCell
             cell.content.text = self.movie?.synopsis
+            let height = cell.content.contentSize.height
+            cell.heightAnchor.constraint(equalToConstant: height).isActive = true
+            cell.content.isScrollEnabled = false
+            cell.content.isEditable = false
             return cell
         }else {
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId2") as! commentCell
-            
             let comment = self.comments[indexPath.row]
             cell.writer.text = comment.writer
             cell.rating.text = "\(comment.rating)"
