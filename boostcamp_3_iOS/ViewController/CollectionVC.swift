@@ -8,15 +8,16 @@
 
 import UIKit
 
-enum filteringMethod:String {
-    case reservation_rate
-    case quration
-    case open
+enum filteringMethod:Int {
+    case reservation_rate = 0
+    case quration = 1
+    case open = 2
 }
 
 class CollectionVC: UIViewController {
 
     var movies = [movie]()
+    var filterType: filteringMethod?
     
     @IBOutlet var collectionView: UICollectionView!
     
@@ -27,10 +28,35 @@ class CollectionVC: UIViewController {
         collectionView.dataSource = self
         // Do any additional setup after loading the view.
         
+        filterType = filteringMethod.init(rawValue: 0)
+        
         let url = "http://connect-boxoffice.run.goorm.io/movies"
         getJsonFromURL(getURL: url)
         
+        NotificationCenter.default.addObserver(self, selector: #selector(changeFilter(_:)), name: Notification.Name(rawValue: "filtering2"), object: nil)
+        
+        
         setupNavigation()
+    }
+    
+    @objc func changeFilter(_ notification: Notification) {
+        if let dict = notification.userInfo as NSDictionary? {
+            if let id = dict["filterType"] as? filteringMethod{
+                if id.rawValue == 0 {
+                    self.navigationItem.title = "예매율순"
+                    let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=0"
+                    self.getJsonFromURL(getURL: url)
+                }else if id.rawValue == 1 {
+                    self.navigationItem.title = "큐레이션"
+                    let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=1"
+                    self.getJsonFromURL(getURL: url)
+                }else {
+                    self.navigationItem.title = "개봉일순"
+                    let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=2"
+                    self.getJsonFromURL(getURL: url)
+                }
+            }
+        }
     }
     
     @IBAction func filteringButton(_ sender: Any) {
@@ -40,20 +66,34 @@ class CollectionVC: UIViewController {
         let reservationRate = UIAlertAction(title: "예매율", style: .default) { [weak self] (action) in
             guard let `self` = self else {return}
             self.navigationItem.title = "예매율순"
+            self.filterType = filteringMethod.init(rawValue: 0)
             let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=0"
             self.getJsonFromURL(getURL: url)
+            
+            let dictat = ["filterType": self.filterType]
+            NotificationCenter.default.post(name: Notification.Name("filtering"), object: nil, userInfo: dictat as [AnyHashable : Any])
         }
+        
         let quaration = UIAlertAction(title: "큐레이션", style: .default) { [weak self](action) in
             guard let `self` = self else {return}
             self.navigationItem.title = "큐레이션"
+            self.filterType = filteringMethod.init(rawValue: 1)
             let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=1"
             self.getJsonFromURL(getURL: url)
+            
+            let dictat = ["filterType": self.filterType]
+            NotificationCenter.default.post(name: Notification.Name("filtering"), object: nil, userInfo: dictat as [AnyHashable : Any])
         }
+        
         let openTime = UIAlertAction(title: "개봉일", style: .default) { [weak self] (action) in
             guard let `self` = self else {return}
-            self.navigationItem.title = "개봉일"
+            self.navigationItem.title = "개봉일순"
+            self.filterType = filteringMethod.init(rawValue: 2)
             let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=2"
             self.getJsonFromURL(getURL: url)
+            
+            let dictat = ["filterType": self.filterType]
+            NotificationCenter.default.post(name: Notification.Name("filtering"), object: nil, userInfo: dictat as [AnyHashable : Any])
         }
         
         let cancle = UIAlertAction(title: "취소", style: .cancel)
@@ -73,7 +113,6 @@ class CollectionVC: UIViewController {
     }
     
 
-    
     func getJsonFromURL(getURL: String) {
         guard let url = URL(string: getURL) else {return}
         URLSession.shared.dataTask(with: url) { [weak self] (datas, response, error) in
@@ -103,13 +142,14 @@ class CollectionVC: UIViewController {
             
             }.resume()
     }
-    
-    
 }
+
 extension CollectionVC: UICollectionViewDelegateFlowLayout {
     
 }
+
 extension CollectionVC: UICollectionViewDataSource{
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.movies.count
     }
@@ -126,8 +166,5 @@ extension CollectionVC: UICollectionViewDataSource{
         cell.poster.load(url: imageURL)
         
         return cell
-        
     }
-    
-    
 }

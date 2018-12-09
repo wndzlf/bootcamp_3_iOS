@@ -25,6 +25,7 @@ class DetailMovieVC: UIViewController {
         
         let url = "http://connect-boxoffice.run.goorm.io/movie?id=\(id!)"
         let commmentsURL = "http://connect-boxoffice.run.goorm.io/comments?movie_id=\(id!)"
+        
         getJsonFromURL(getURL: url)
         getJsonFromCommentURL(getURL: commmentsURL)
         
