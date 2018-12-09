@@ -30,7 +30,6 @@ class ViewController: UIViewController {
         getJsonFromURL(getURL: url)
         
         NotificationCenter.default.addObserver(self, selector: #selector(changeFilter(_:)), name: Notification.Name(rawValue: "filtering"), object: nil)
-        
     }
     @objc func changeFilter(_ notification: Notification) {
         if let dict = notification.userInfo as NSDictionary? {
@@ -56,7 +55,6 @@ class ViewController: UIViewController {
     @IBAction func flteringButton(_ sender: Any) {
         let actionSheet = UIAlertController(title: "정렬 방식 선택", message:"영화를 어떤 방식으로 정렬할까요?", preferredStyle: .actionSheet)
         
-        
         //예매율 , 큐레이션, 개봉일 정렬
         let reservationRate = UIAlertAction(title: "예매율", style: .default) { [weak self] (action) in
             guard let `self` = self else {return}
@@ -64,7 +62,7 @@ class ViewController: UIViewController {
             self.filterType = filteringMethod.init(rawValue: 0)
             let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=0"
             self.getJsonFromURL(getURL: url)
-            
+
             let dictat = ["filterType": self.filterType]
             NotificationCenter.default.post(name: Notification.Name("filtering2"), object: nil, userInfo: dictat as [AnyHashable : Any])
         }
@@ -89,6 +87,9 @@ class ViewController: UIViewController {
             NotificationCenter.default.post(name: Notification.Name("filtering2"), object: nil, userInfo: dictat as [AnyHashable : Any])
         }
         
+        let collectionVC = self.storyboard?.instantiateViewController(withIdentifier: "CollectionVC") as! CollectionVC
+        collectionVC.filterType = self.filterType
+        
         let cancle = UIAlertAction(title: "취소", style: .cancel)
         
         actionSheet.addAction(reservationRate)
@@ -98,7 +99,6 @@ class ViewController: UIViewController {
         
         self.present(actionSheet, animated: true, completion: nil)
     }
-    
     
     func setupNavigation() {
         navigationItem.title = "예매율순"

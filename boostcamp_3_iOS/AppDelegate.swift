@@ -13,9 +13,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        
+        //보류
+//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//
+//        let collectionVC = storyboard.instantiateViewController(withIdentifier: "CollectionVC") as! CollectionVC
+//        collectionVC.notification?.addObserver(self, selector: #selector(changeFilter(_:)), name: Notification.Name(rawValue: "filtering2"), object: nil)
+        
+        
+        //NotificationCenter.default.addObserver(self, selector: #selector(changeFilter(_:)), name: Notification.Name(rawValue: "filtering2"), object: nil)
+        //collectionVC.notifica
+        
         return true
     }
 

@@ -147,7 +147,7 @@
         <!--CollectionVC-->
         <scene sceneID="ra3-jY-3Bt">
             <objects>
-                <viewController id="KCr-Fc-EmD" customClass="CollectionVC" customModule="boostcamp_3_iOS" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CollectionVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="KCr-Fc-EmD" customClass="CollectionVC" customModule="boostcamp_3_iOS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ATs-dL-2ez">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

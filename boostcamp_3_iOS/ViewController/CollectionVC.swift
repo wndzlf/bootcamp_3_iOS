@@ -15,10 +15,9 @@ enum filteringMethod:Int {
 }
 
 class CollectionVC: UIViewController {
-
     var movies = [movie]()
     var filterType: filteringMethod?
-    
+
     @IBOutlet var collectionView: UICollectionView!
     
     override func viewDidLoad() {
@@ -28,18 +27,34 @@ class CollectionVC: UIViewController {
         collectionView.dataSource = self
         // Do any additional setup after loading the view.
         
-        filterType = filteringMethod.init(rawValue: 0)
+        //filterType = filteringMethod.init(rawValue: 0)
+        
+        guard let filter = filterType?.rawValue else {return}
+        
+//        if filter == 0 {
+//            self.navigationItem.title = "예매율순"
+//            let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=0"
+//            self.getJsonFromURL(getURL: url)
+//        }else if filter == 1 {
+//            self.navigationItem.title = "큐레이션"
+//            let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=1"
+//            self.getJsonFromURL(getURL: url)
+//        }else {
+//            self.navigationItem.title = "개봉일순"
+//            let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=2"
+//            self.getJsonFromURL(getURL: url)
+//        }
         
         let url = "http://connect-boxoffice.run.goorm.io/movies"
         getJsonFromURL(getURL: url)
         
         NotificationCenter.default.addObserver(self, selector: #selector(changeFilter(_:)), name: Notification.Name(rawValue: "filtering2"), object: nil)
         
-        
         setupNavigation()
     }
     
     @objc func changeFilter(_ notification: Notification) {
+        print("changeFilter")
         if let dict = notification.userInfo as NSDictionary? {
             if let id = dict["filterType"] as? filteringMethod{
                 if id.rawValue == 0 {
@@ -61,7 +76,6 @@ class CollectionVC: UIViewController {
     
     @IBAction func filteringButton(_ sender: Any) {
         let actionSheet = UIAlertController(title: "정렬 방식 선택", message:"영화를 어떤 방식으로 정렬할까요?", preferredStyle: .actionSheet)
-        
         //예매율 , 큐레이션, 개봉일 정렬
         let reservationRate = UIAlertAction(title: "예매율", style: .default) { [weak self] (action) in
             guard let `self` = self else {return}
