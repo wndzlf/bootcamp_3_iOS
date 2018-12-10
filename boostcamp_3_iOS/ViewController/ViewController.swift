@@ -31,10 +31,13 @@ class ViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(changeFilter(_:)), name: Notification.Name(rawValue: "filtering"), object: nil)
     }
+    
+    
+    
     @objc func changeFilter(_ notification: Notification) {
+        print("changeFilter")
         if let dict = notification.userInfo as NSDictionary? {
             if let id = dict["filterType"] as? filteringMethod{
-                print(id.rawValue)
                 if id.rawValue == 0 {
                     self.navigationItem.title = "예매율순"
                     let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=0"
@@ -65,7 +68,14 @@ class ViewController: UIViewController {
 
             let dictat = ["filterType": self.filterType]
             NotificationCenter.default.post(name: Notification.Name("filtering2"), object: nil, userInfo: dictat as [AnyHashable : Any])
+            
+            let nc = self.tabBarController?.viewControllers?[1] as! UINavigationController
+            if nc.topViewController is CollectionVC {
+                let svc = nc.topViewController as! CollectionVC
+                svc.filterType = self.filterType
+            }
         }
+        
         let quaration = UIAlertAction(title: "큐레이션", style: .default) { [weak self](action) in
             guard let `self` = self else {return}
             self.navigationItem.title = "큐레이션"
@@ -75,7 +85,14 @@ class ViewController: UIViewController {
             
             let dictat = ["filterType": self.filterType]
             NotificationCenter.default.post(name: Notification.Name("filtering2"), object: nil, userInfo: dictat as [AnyHashable : Any])
+            
+            let nc = self.tabBarController?.viewControllers?[1] as! UINavigationController
+            if nc.topViewController is CollectionVC {
+                let svc = nc.topViewController as! CollectionVC
+                svc.filterType = self.filterType
+            }
         }
+        
         let openTime = UIAlertAction(title: "개봉일", style: .default) { [weak self] (action) in
             guard let `self` = self else {return}
             self.navigationItem.title = "개봉일순"
@@ -85,10 +102,15 @@ class ViewController: UIViewController {
             
             let dictat = ["filterType": self.filterType]
             NotificationCenter.default.post(name: Notification.Name("filtering2"), object: nil, userInfo: dictat as [AnyHashable : Any])
+            
+            let nc = self.tabBarController?.viewControllers?[1] as! UINavigationController
+            if nc.topViewController is CollectionVC {
+                let svc = nc.topViewController as! CollectionVC
+                svc.filterType = self.filterType
+            }
         }
         
-        let collectionVC = self.storyboard?.instantiateViewController(withIdentifier: "CollectionVC") as! CollectionVC
-        collectionVC.filterType = self.filterType
+        
         
         let cancle = UIAlertAction(title: "취소", style: .cancel)
         

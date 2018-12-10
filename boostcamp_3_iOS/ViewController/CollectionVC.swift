@@ -22,35 +22,38 @@ class CollectionVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setupNavigation()
 
         collectionView.delegate = self
         collectionView.dataSource = self
-        // Do any additional setup after loading the view.
         
-        //filterType = filteringMethod.init(rawValue: 0)
-        
-        guard let filter = filterType?.rawValue else {return}
-        
-//        if filter == 0 {
-//            self.navigationItem.title = "예매율순"
-//            let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=0"
-//            self.getJsonFromURL(getURL: url)
-//        }else if filter == 1 {
-//            self.navigationItem.title = "큐레이션"
-//            let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=1"
-//            self.getJsonFromURL(getURL: url)
-//        }else {
-//            self.navigationItem.title = "개봉일순"
-//            let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=2"
-//            self.getJsonFromURL(getURL: url)
-//        }
-        
-        let url = "http://connect-boxoffice.run.goorm.io/movies"
-        getJsonFromURL(getURL: url)
+        setupFiltering(filterType?.rawValue)
         
         NotificationCenter.default.addObserver(self, selector: #selector(changeFilter(_:)), name: Notification.Name(rawValue: "filtering2"), object: nil)
-        
-        setupNavigation()
+    }
+    //
+    func setupFiltering(_ filterTypeRaw: Int?){
+        if let filter = filterTypeRaw {
+            if filter == 0 {
+                self.navigationItem.title = "예매율순"
+                let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=0"
+                self.getJsonFromURL(getURL: url)
+            }else if filter == 1 {
+                self.navigationItem.title = "큐레이션"
+                let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=1"
+                self.getJsonFromURL(getURL: url)
+            }else if filter == 2{
+                self.navigationItem.title = "개봉일순"
+                let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=2"
+                self.getJsonFromURL(getURL: url)
+            }
+        }else {
+            self.navigationItem.title = "예매율순"
+            let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=0"
+            self.getJsonFromURL(getURL: url)
+            filterType = filteringMethod.init(rawValue: 0)
+        }
     }
     
     @objc func changeFilter(_ notification: Notification) {
