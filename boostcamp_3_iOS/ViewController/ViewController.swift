@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 class ViewController: UIViewController {
     
     @IBOutlet var tableview: UITableView!
@@ -130,8 +129,8 @@ class ViewController: UIViewController {
     
     func getJsonFromURL(getURL: String) {
         guard let url = URL(string: getURL) else {return}
+        
         URLSession.shared.dataTask(with: url) { [weak self] (datas, response, error) in
-            
             guard let `self` = self else {return}
             
             if error != nil {
@@ -153,11 +152,11 @@ class ViewController: UIViewController {
                 
                 print("Error")
             }
-        
-            
         }.resume()
     }
+    
 }
+
 
 extension ViewController: UITableViewDataSource{
 
@@ -203,13 +202,18 @@ extension ViewController: UITableViewDelegate {
 
 //https://www.hackingwithswift.com/example-code/uikit/how-to-load-a-remote-image-url-into-uiimageview
 //GCD개념 숙지
+//한번 더 보기
+
+//이걸 통해서 다운로드 하는게 훨씬 좋은거 같음
+//https://medium.com/@rashpindermaan68/downloading-files-in-background-with-urlsessiondownloadtask-swift-xcode-download-progress-ios-2e278d6d76cb
 extension UIImageView {
     func load(url: URL) {
-        DispatchQueue.global().async { [weak self] in
+        DispatchQueue.global(qos: .userInitiated).async {
             if let data = try? Data(contentsOf: url) {
                 if let image = UIImage(data: data){
-                    DispatchQueue.main.async {
-                        self?.image = image
+                    DispatchQueue.main.async { [weak self] in
+                        guard let `self` = self else {return}
+                        self.image = image
                     }
                 }
             }

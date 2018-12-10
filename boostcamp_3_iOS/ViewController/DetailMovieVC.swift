@@ -23,11 +23,14 @@ class DetailMovieVC: UIViewController {
         
         setupNavigation()
         
-        let url = "http://connect-boxoffice.run.goorm.io/movie?id=\(id!)"
-        let commmentsURL = "http://connect-boxoffice.run.goorm.io/comments?movie_id=\(id!)"
         
-        getJsonFromURL(getURL: url)
-        getJsonFromCommentURL(getURL: commmentsURL)
+        if let movie_id = id {
+                let url = "http://connect-boxoffice.run.goorm.io/movie?id=\(movie_id)"
+                let commmentsURL = "http://connect-boxoffice.run.goorm.io/comments?movie_id=\(movie_id)"
+            
+                getJsonFromURL(getURL: url)
+                getJsonFromCommentURL(getURL: commmentsURL)
+        }
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -94,16 +97,18 @@ class DetailMovieVC: UIViewController {
                     self.present(alter, animated: true, completion: nil)
                 }
                 
+                print(response)
                 //10번에 1번꼴로 데이터를 받아오지 못함.
                 guard let data = datas else {return}
-                
                 do{
                     let detail = try JSONDecoder().decode(detailMovie.self, from: data)
                     self.movie = detail
                     self.tableView.reloadData()
+                    
                 }catch{
                     print("Error")
                 }
+                
             }
         }.resume()
     }
