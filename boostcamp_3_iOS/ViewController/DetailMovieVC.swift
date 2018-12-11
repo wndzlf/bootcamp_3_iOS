@@ -16,6 +16,9 @@ class DetailMovieVC: UIViewController {
     var comments = [oneLine]()
     var movie:detailMovie?
     
+    var fieldValue: Any?
+    var fieldValue2: Any?
+    
     @IBOutlet var tableView: UITableView!
     
     override func viewDidLoad() {
@@ -61,13 +64,16 @@ class DetailMovieVC: UIViewController {
            DispatchQueue.main.async {
                 guard let `self` = self else {return}
             
+                let httpResponse = response as! HTTPURLResponse
+                self.fieldValue = httpResponse.allHeaderFields["Content-Length"]
+                print(self.fieldValue)
+            
                 if error != nil {
                     let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
                     let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
                     alter.addAction(action)
                     self.present(alter, animated: true, completion: nil)
                 }
-            
                 guard let data = datas else {return}
             
                 do{
@@ -78,7 +84,8 @@ class DetailMovieVC: UIViewController {
                     let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
                     let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
                     alter.addAction(action)
-                    print("error")
+                    self.present(alter, animated: true, completion: nil)
+                    print("error getJsonFromCommentURL")
                 }
             }
         }.resume()
@@ -90,6 +97,10 @@ class DetailMovieVC: UIViewController {
             DispatchQueue.main.async {
                 guard let `self` = self else {return}
                 
+                let httpResponse = response as! HTTPURLResponse
+                self.fieldValue2 = httpResponse.allHeaderFields["Content-Length"]
+                print(self.fieldValue2!)
+                
                 if error != nil {
                     let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
                     let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
@@ -97,18 +108,23 @@ class DetailMovieVC: UIViewController {
                     self.present(alter, animated: true, completion: nil)
                 }
                 
-                print(response)
+                //response를 확인해보면 status code는 200으로 문제가 없지만 content-length가 가끔씩 짧은게 전송된다.
+                //print(response.debugDescription)
                 //10번에 1번꼴로 데이터를 받아오지 못함.
                 guard let data = datas else {return}
+                
                 do{
                     let detail = try JSONDecoder().decode(detailMovie.self, from: data)
                     self.movie = detail
                     self.tableView.reloadData()
                     
                 }catch{
-                    print("Error")
+                    let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
+                    let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
+                    alter.addAction(action)
+                    self.present(alter, animated: true, completion: nil)
+                    print("Error getJsonFromURL")
                 }
-                
             }
         }.resume()
     }

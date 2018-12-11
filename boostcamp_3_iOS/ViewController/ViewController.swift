@@ -139,6 +139,7 @@ class ViewController: UIViewController {
                 alter.addAction(action)
                 self.present(alter, animated: true, completion: nil)
             }
+            
             guard let data = datas else {return}
         
             do {
@@ -149,7 +150,10 @@ class ViewController: UIViewController {
                     self.tableview.reloadData()
                 }
             }catch{
-                
+                let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
+                let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
+                alter.addAction(action)
+                self.present(alter, animated: true, completion: nil)
                 print("Error")
             }
         }.resume()
@@ -207,17 +211,58 @@ extension ViewController: UITableViewDelegate {
 //이걸 통해서 다운로드 하는게 훨씬 좋은거 같음
 //https://medium.com/@rashpindermaan68/downloading-files-in-background-with-urlsessiondownloadtask-swift-xcode-download-progress-ios-2e278d6d76cb
 extension UIImageView {
+    func getData(from url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {
+        URLSession.shared.dataTask(with: url, completionHandler: completion).resume()
+    }
+    
     func load(url: URL) {
-        DispatchQueue.global(qos: .userInitiated).async {
-            if let data = try? Data(contentsOf: url) {
-                if let image = UIImage(data: data){
-                    DispatchQueue.main.async { [weak self] in
-                        guard let `self` = self else {return}
-                        self.image = image
-                    }
-                }
+        getData(from: url) { [weak self] data, response, error in
+            guard let data = data, error == nil else { return }
+            print("Download Finished")
+            DispatchQueue.main.async() {
+                self?.image = UIImage(data: data)
             }
+        }
+//        DispatchQueue.global(qos: .userInitiated).async {
+//            if let data = try? Data(contentsOf: url) {
+//                if let image = UIImage(data: data){
+//                    DispatchQueue.main.async { [weak self] in
+//                        guard let `self` = self else {return}
+//                        self.image = image
+//                    }
+//                }
+//            }
+//        }
+    }
+}
+extension UIImageView: URLSessionDownloadDelegate {
+    public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+        print("다운로드 완료 하였습니다")
+    }
+    public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        
+        let progress = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
+        
+        DispatchQueue.main.async {
+            print("다운로드 중입니다")
         }
     }
 }
+extension ViewController: URLSessionDelegate{
+    
+}
+
+extension ViewController: URLSessionDataDelegate {
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+        DispatchQueue.main.async {
+        print("didReceive Data")
+        }
+    }
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didBecome downloadTask: URLSessionDownloadTask) {
+        DispatchQueue.main.async {
+        print("did become download Task")
+        }
+    }
+}
+
 
