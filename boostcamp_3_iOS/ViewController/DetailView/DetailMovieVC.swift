@@ -13,8 +13,8 @@ class DetailMovieVC: UIViewController {
     var id: String?
     var navigationTitle: String?
     
-    var comments = [oneLine]()
-    var movie:detailMovie?
+    var comments = [Comment]()
+    var movie:MovieDetail?
     
     var fieldValue: Any?
     var fieldValue2: Any?
@@ -45,7 +45,7 @@ class DetailMovieVC: UIViewController {
     {
         let tappedImage = tapGestureRecognizer.view as! UIImageView
         
-        let showVC = self.storyboard?.instantiateViewController(withIdentifier: "showFullPosterVC") as! showFullPosterVC
+        let showVC = self.storyboard?.instantiateViewController(withIdentifier: "MovieFullImageVC") as! MovieFullImageVC
         
         self.present(showVC, animated: false) {
             showVC.fullScreen.image = tappedImage.image
@@ -66,7 +66,6 @@ class DetailMovieVC: UIViewController {
             
                 let httpResponse = response as! HTTPURLResponse
                 self.fieldValue = httpResponse.allHeaderFields["Content-Length"]
-                print(self.fieldValue)
             
                 if error != nil {
                     let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
@@ -77,7 +76,7 @@ class DetailMovieVC: UIViewController {
                 guard let data = datas else {return}
             
                 do{
-                    let one = try JSONDecoder().decode(superoneLine.self, from: data)
+                    let one = try JSONDecoder().decode(CommentList.self, from: data)
                     self.comments = one.comments
                     self.tableView.reloadData()
                 }catch{
@@ -114,7 +113,7 @@ class DetailMovieVC: UIViewController {
                 guard let data = datas else {return}
                 
                 do{
-                    let detail = try JSONDecoder().decode(detailMovie.self, from: data)
+                    let detail = try JSONDecoder().decode(MovieDetail.self, from: data)
                     self.movie = detail
                     self.tableView.reloadData()
                     
@@ -141,7 +140,6 @@ extension DetailMovieVC: UITableViewDelegate {
         }else {
             return 120
         }
-        
     }
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 3
@@ -152,11 +150,9 @@ extension DetailMovieVC: UITableViewDelegate {
         label.backgroundColor = .lightGray
         return label
     }
-    
 }
 
 extension DetailMovieVC: UITableViewDataSource{
-    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 3
     }

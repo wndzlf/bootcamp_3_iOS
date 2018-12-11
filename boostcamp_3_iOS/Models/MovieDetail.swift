@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct detailMovie:Decodable {
+struct MovieDetail:Decodable {
     let audience:Int
     let actor:String
     let duration:Int

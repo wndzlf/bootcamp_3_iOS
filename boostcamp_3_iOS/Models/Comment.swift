@@ -8,7 +8,12 @@
 
 import Foundation
 
-struct oneLine: Decodable {
+struct CommentList: Decodable {
+    let comments: [Comment]
+    let movie_id: String
+}
+
+struct Comment: Decodable {
     let rating:Double
     let timestamp:Double
     let writer: String

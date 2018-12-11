@@ -8,7 +8,7 @@
 
 import UIKit
 
-class tableviewCell: UITableViewCell {
+class TableViewCell: UITableViewCell {
 
     @IBOutlet var movieImage: UIImageView!
     @IBOutlet var movieTitle: UILabel!
@@ -16,6 +16,7 @@ class tableviewCell: UITableViewCell {
     @IBOutlet var movieRate: UILabel!
     @IBOutlet var movieGrade: UILabel!
     @IBOutlet var movieDate: UILabel!
+    @IBOutlet var progressLabel: UILabel!
     
     
     override func awakeFromNib() {
@@ -28,6 +29,8 @@ class tableviewCell: UITableViewCell {
         // Configure the view for the selected state
         
     }
+    
+    
     
     
 

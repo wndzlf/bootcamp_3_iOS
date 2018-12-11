@@ -8,7 +8,12 @@
 
 import Foundation
 
-struct movie: Decodable {
+struct MovieList:Decodable {
+    let order_type: Int
+    let movies: [Movie]
+}
+
+struct Movie: Decodable {
     let date: String
     let reservation_rate: Double
     let reservation_grade: Int

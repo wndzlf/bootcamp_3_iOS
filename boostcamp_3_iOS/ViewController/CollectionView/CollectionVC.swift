@@ -15,7 +15,7 @@ enum filteringMethod:Int {
 }
 
 class CollectionVC: UIViewController {
-    var movies = [movie]()
+    var movies = [Movie]()
     var filterType: filteringMethod?
 
     @IBOutlet var collectionView: UICollectionView!
@@ -32,7 +32,7 @@ class CollectionVC: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(changeFilter(_:)), name: Notification.Name(rawValue: "filtering2"), object: nil)
     }
-    //
+    
     func setupFiltering(_ filterTypeRaw: Int?){
         if let filter = filterTypeRaw {
             if filter == 0 {
@@ -146,7 +146,7 @@ class CollectionVC: UIViewController {
             guard let data = datas else {return}
             
             do {
-                let order = try JSONDecoder().decode(orderType.self, from: data)
+                let order = try JSONDecoder().decode(MovieList.self, from: data)
                 
                 self.movies = order.movies
                 DispatchQueue.main.async {
