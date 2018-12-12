@@ -9,45 +9,65 @@
 import UIKit
 
 class TableVC: UIViewController  {
-    
+    // Mark:- outlet
     @IBOutlet var tableview: UITableView!
+    
+    // Mark:- Property
     var movies = [Movie]()
-    
     var filterType: filteringMethod?
+    private let refreshControl = UIRefreshControl()
 
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setupNavigation()
         
         tableview.dataSource = self
         tableview.delegate = self
         
-        setupNavigation()
+        tableview.addSubview(refreshControl)
+        refreshControl.addTarget(self, action: #selector(refreshWeatherData(_:)), for: .valueChanged)
         
-        filterType = filteringMethod.init(rawValue: 0)
-        
-        let url = "http://connect-boxoffice.run.goorm.io/movies"
-        getJsonFromURL(getURL: url)
+        guard let filterType = filteringMethod.init(rawValue: 0) else {return}
+        fetchData(filterType)
         
         NotificationCenter.default.addObserver(self, selector: #selector(changeFilter(_:)), name: Notification.Name(rawValue: "filtering"), object: nil)
     }
     
+    func fetchData(_ filterType: filteringMethod) {
+        MovieListAPI.shared.getJsonFromURL(filterType: filterType) { [weak self] (movieList, error) in
+            guard let `self` = self else {return}
+            guard let movieList = movieList else {return}
+            self.movies = movieList.movies
+            
+            if error != nil {
+                let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
+                let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
+                alter.addAction(action)
+                self.present(alter, animated: true, completion: nil)
+            }
+            DispatchQueue.main.async {
+                self.tableview.reloadData()
+            }
+        }
+    }
+    
+    @objc func refreshWeatherData(_ sender:Any) {
+        
+    }
+    
     @objc func changeFilter(_ notification: Notification) {
-        print("changeFilter")
         if let dict = notification.userInfo as NSDictionary? {
-            if let id = dict["filterType"] as? filteringMethod{
-                if id.rawValue == 0 {
+            if let filterType = dict["filterType"] as? filteringMethod{
+                if filterType.rawValue == 0 {
                     self.navigationItem.title = "예매율순"
-                    let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=0"
-                    self.getJsonFromURL(getURL: url)
-                }else if id.rawValue == 1 {
+                    self.fetchData(filterType)
+                }else if filterType.rawValue == 1 {
                     self.navigationItem.title = "큐레이션"
-                    let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=1"
-                    self.getJsonFromURL(getURL: url)
+                    self.fetchData(filterType)
                 }else {
                     self.navigationItem.title = "개봉일순"
-                    let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=2"
-                    self.getJsonFromURL(getURL: url)
+                    self.fetchData(filterType)
                 }
             }
         }
@@ -61,8 +81,8 @@ class TableVC: UIViewController  {
             guard let `self` = self else {return}
             self.navigationItem.title = "예매율순"
             self.filterType = filteringMethod.init(rawValue: 0)
-            let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=0"
-            self.getJsonFromURL(getURL: url)
+            guard let filter = self.filterType else {return}
+            self.fetchData(filter)
 
             let dictat = ["filterType": self.filterType]
             NotificationCenter.default.post(name: Notification.Name("filtering2"), object: nil, userInfo: dictat as [AnyHashable : Any])
@@ -71,6 +91,7 @@ class TableVC: UIViewController  {
             if nc.topViewController is CollectionVC {
                 let svc = nc.topViewController as! CollectionVC
                 svc.filterType = self.filterType
+                print(svc.filterType)
             }
         }
         
@@ -78,8 +99,8 @@ class TableVC: UIViewController  {
             guard let `self` = self else {return}
             self.navigationItem.title = "큐레이션"
             self.filterType = filteringMethod.init(rawValue: 1)
-            let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=1"
-            self.getJsonFromURL(getURL: url)
+            guard let filter = self.filterType else {return}
+            self.fetchData(filter)
             
             let dictat = ["filterType": self.filterType]
             NotificationCenter.default.post(name: Notification.Name("filtering2"), object: nil, userInfo: dictat as [AnyHashable : Any])
@@ -95,8 +116,8 @@ class TableVC: UIViewController  {
             guard let `self` = self else {return}
             self.navigationItem.title = "개봉일순"
             self.filterType = filteringMethod.init(rawValue: 2)
-            let url = "http://connect-boxoffice.run.goorm.io/movies?order_type=2"
-            self.getJsonFromURL(getURL: url)
+            guard let filter = self.filterType else {return}
+            self.fetchData(filter)
             
             let dictat = ["filterType": self.filterType]
             NotificationCenter.default.post(name: Notification.Name("filtering2"), object: nil, userInfo: dictat as [AnyHashable : Any])
@@ -107,6 +128,7 @@ class TableVC: UIViewController  {
                 svc.filterType = self.filterType
             }
         }
+        
         let cancle = UIAlertAction(title: "취소", style: .cancel)
         
         actionSheet.addAction(reservationRate)
@@ -123,37 +145,6 @@ class TableVC: UIViewController  {
         navigationController?.navigationBar.barTintColor = barColor
     }
     
-    func getJsonFromURL(getURL: String) {
-        guard let url = URL(string: getURL) else {return}
-        
-        URLSession.shared.dataTask(with: url) { [weak self] (datas, response, error) in
-            guard let `self` = self else {return}
-            
-            if error != nil {
-                let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
-                let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
-                alter.addAction(action)
-                self.present(alter, animated: true, completion: nil)
-            }
-            
-            guard let data = datas else {return}
-        
-            do {
-                let order = try JSONDecoder().decode(MovieList.self, from: data)
-                
-                self.movies = order.movies
-                DispatchQueue.main.async {
-                    self.tableview.reloadData()
-                }
-            }catch{
-                let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
-                let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
-                alter.addAction(action)
-                self.present(alter, animated: true, completion: nil)
-                print("Error")
-            }
-        }.resume()
-    }
 }
 
 
@@ -197,8 +188,10 @@ extension TableVC: UITableViewDelegate {
         self.navigationController?.pushViewController(detailmoiveVC, animated: true)
     }
 }
+
+
 //https://medium.com/@rashpindermaan68/downloading-files-in-background-with-urlsessiondownloadtask-swift-xcode-download-progress-ios-2e278d6d76cb
-    extension UIImageView {
+extension UIImageView {
     
     func getData(from url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {
         URLSession.shared.dataTask(with: url, completionHandler: completion).resume()
@@ -214,7 +207,6 @@ extension TableVC: UITableViewDelegate {
             }
         }
     }
-    
 }
 
 /*

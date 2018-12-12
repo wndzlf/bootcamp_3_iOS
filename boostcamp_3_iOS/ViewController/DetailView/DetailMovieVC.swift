@@ -98,7 +98,7 @@ class DetailMovieVC: UIViewController {
                 
                 let httpResponse = response as! HTTPURLResponse
                 self.fieldValue2 = httpResponse.allHeaderFields["Content-Length"]
-                print(self.fieldValue2!)
+                print("Content-Length = \(self.fieldValue2!)")
                 
                 if error != nil {
                     let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
