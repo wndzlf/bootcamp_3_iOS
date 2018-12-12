@@ -10,15 +10,14 @@ import Foundation
 import UIKit
 
 struct MovieListAPI:APIManager {
-    //let baseURL = "http://connect-boxoffice.run.goorm.io/movies"
-    //let baseURL = "http://connect-boxoffice.run.goorm.io/movies"
     static let shared = MovieListAPI()
-    let baseURL = url("")
+    private init(){}
     
-    func getJsonFromURL(filterType: filteringMethod,  completionHandler:@escaping ( (MovieList?, Error?) -> Void )) {
-        let baseWithFilterTypeURL = baseURL+"\(filterType.rawValue)"
+    var baseURL = url("")
+    
+    func getJsonFromUrlWithFilter(filterType: filteringMethod,  completionHandler:@escaping ( (MovieList?, Error?) -> Void )) {
+        let baseWithFilterTypeURL = baseURL + "movies?/order_type=" + "\(filterType.rawValue)"
         guard let url = URL(string: baseWithFilterTypeURL) else {return}
-        //UIApplication.shared.isNetworkActivityIndicatorVisible = true
         URLSession.shared.dataTask(with: url) {(datas, response, error) in
             if error != nil {
                 print("Network Error")
@@ -32,6 +31,44 @@ struct MovieListAPI:APIManager {
                 print("JSON Parising Error")
             }
         }.resume()
+    }
+    
+    func getJsonFromUrlWithMoiveId(movieId: String, completionHandler:@escaping ( (CommentList?, Error?) -> Void )) {
+        let baseWithFilterTypeURL = baseURL+"comments?movie_id="+"\(movieId)"
+        
+        guard let url = URL(string: baseWithFilterTypeURL) else {return}
+        URLSession.shared.dataTask(with: url) {(datas, response, error) in
+            if error != nil {
+                print("Network Error")
+            }
+            guard let data = datas else {return}
+            do {
+                let order = try JSONDecoder().decode(CommentList.self, from: data)
+                
+                completionHandler(order, error)
+            }catch{
+                print("JSON Parising Error")
+            }
+        }.resume()
+    }
+    
+    func getJsonFromUrlMovieDetail(movieId: String, completionHandler:@escaping ( (MovieDetail?, Error?) -> Void )) {
+        let baseWithFilterTypeURL = baseURL+"movie?id="+"\(movieId)"
+        
+        guard let url = URL(string: baseWithFilterTypeURL) else {return}
+        URLSession.shared.dataTask(with: url) {(datas, response, error) in
+            if error != nil {
+                print("Network Error")
+            }
+            guard let data = datas else {return}
+            
+            do {
+                let order = try JSONDecoder().decode(MovieDetail.self, from: data)
+                completionHandler(order, error)
+            }catch{
+                print("JSON Parising Error")
+            }
+            }.resume()
     }
     
 

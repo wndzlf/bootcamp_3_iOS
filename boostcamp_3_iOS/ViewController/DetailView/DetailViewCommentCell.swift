@@ -8,7 +8,7 @@
 
 import UIKit
 
-class commentCell: UITableViewCell {
+class DetailViewCommentCell: UITableViewCell {
     
     @IBOutlet var writer: UILabel!
     @IBOutlet var rating: UILabel!

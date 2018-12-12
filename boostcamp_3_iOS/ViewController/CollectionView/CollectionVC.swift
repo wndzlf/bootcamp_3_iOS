@@ -127,7 +127,7 @@ class CollectionVC: UIViewController {
 
     
     func fetchData(_ filterType: filteringMethod) {
-        MovieListAPI.shared.getJsonFromURL(filterType: filterType) { [weak self] (movieList, error) in
+        MovieListAPI.shared.getJsonFromUrlWithFilter(filterType: filterType) { [weak self] (movieList, error) in
             guard let `self` = self else {return}
             guard let movieList = movieList else {return}
             self.movies = movieList.movies
@@ -147,7 +147,17 @@ class CollectionVC: UIViewController {
 }
 
 extension CollectionVC: UICollectionViewDelegateFlowLayout {
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let detailmoiveVC = self.storyboard?.instantiateViewController(withIdentifier: "DetailMovie") as! DetailMovieVC
+        print("objectIdentifier \(ObjectIdentifier(detailmoiveVC).debugDescription)")
+        
+        let backButton = UIBarButtonItem.init(title: "영화목록", style: UIBarButtonItem.Style.plain, target: nil, action: nil)
+        navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+        
+        detailmoiveVC.navigationTitle = movies[indexPath.row].title
+        detailmoiveVC.id = movies[indexPath.row].id
+        self.navigationController?.pushViewController(detailmoiveVC, animated: true)
+    }
 }
 
 extension CollectionVC: UICollectionViewDataSource{

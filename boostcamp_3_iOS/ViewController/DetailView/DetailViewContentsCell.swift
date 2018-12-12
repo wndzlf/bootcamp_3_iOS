@@ -1,5 +1,5 @@
 //
-//  posterCell.swift
+//  contentsCell.swift
 //  boostcamp_3_iOS
 //
 //  Created by admin on 07/12/2018.
@@ -8,15 +8,9 @@
 
 import UIKit
 
-class posterCell: UITableViewCell {
-    @IBOutlet var poster: UIImageView!
-    @IBOutlet var title: UILabel!
-    @IBOutlet var date: UILabel!
-    @IBOutlet var genre: UILabel!
-    @IBOutlet var reservation_rate: UILabel!
-    @IBOutlet var user_rating: UILabel!
-    @IBOutlet var audience: UILabel!
-    
+class DetailViewContentsCell: UITableViewCell {
+
+    @IBOutlet var content: UITextView!
     
     override func awakeFromNib() {
         super.awakeFromNib()

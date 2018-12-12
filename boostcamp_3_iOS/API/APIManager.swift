@@ -10,6 +10,6 @@ protocol APIManager {}
 
 extension APIManager {
     static func url(_ path: String) -> String {
-        return "http://connect-boxoffice.run.goorm.io/movies?/order_type=" + path
+        return "http://connect-boxoffice.run.goorm.io/" + path
     }
 }

@@ -19,7 +19,6 @@ class TableVC: UIViewController  {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupNavigation()
         
         tableview.dataSource = self
@@ -35,7 +34,7 @@ class TableVC: UIViewController  {
     }
     
     func fetchData(_ filterType: filteringMethod) {
-        MovieListAPI.shared.getJsonFromURL(filterType: filterType) { [weak self] (movieList, error) in
+        MovieListAPI.shared.getJsonFromUrlWithFilter(filterType: filterType) { [weak self] (movieList, error) in
             guard let `self` = self else {return}
             guard let movieList = movieList else {return}
             self.movies = movieList.movies
@@ -91,7 +90,6 @@ class TableVC: UIViewController  {
             if nc.topViewController is CollectionVC {
                 let svc = nc.topViewController as! CollectionVC
                 svc.filterType = self.filterType
-                print(svc.filterType)
             }
         }
         
@@ -138,15 +136,12 @@ class TableVC: UIViewController  {
         
         self.present(actionSheet, animated: true, completion: nil)
     }
-    
     func setupNavigation() {
         navigationItem.title = "예매율순"
         let barColor = UIColor(red:0.47, green:0.42, blue:0.91, alpha:1.0)
         navigationController?.navigationBar.barTintColor = barColor
     }
-    
 }
-
 
 extension TableVC: UITableViewDataSource{
 
@@ -179,6 +174,7 @@ extension TableVC: UITableViewDelegate {
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detailmoiveVC = self.storyboard?.instantiateViewController(withIdentifier: "DetailMovie") as! DetailMovieVC
+        print("objectIdentifier \(ObjectIdentifier(detailmoiveVC).debugDescription)")
         
         let backButton = UIBarButtonItem.init(title: "영화목록", style: UIBarButtonItem.Style.plain, target: nil, action: nil)
         navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
@@ -188,7 +184,6 @@ extension TableVC: UITableViewDelegate {
         self.navigationController?.pushViewController(detailmoiveVC, animated: true)
     }
 }
-
 
 //https://medium.com/@rashpindermaan68/downloading-files-in-background-with-urlsessiondownloadtask-swift-xcode-download-progress-ios-2e278d6d76cb
 extension UIImageView {
@@ -201,7 +196,6 @@ extension UIImageView {
         self.image = UIImage(named: "profile2")
         getData(from: url) { [weak self] data, response, error in
             guard let data = data, error == nil else { return }
-            print("Download Finished")
             DispatchQueue.main.async() {
                 self?.image = UIImage(data: data)
             }

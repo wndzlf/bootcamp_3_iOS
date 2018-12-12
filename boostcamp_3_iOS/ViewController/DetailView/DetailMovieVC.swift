@@ -16,118 +16,69 @@ class DetailMovieVC: UIViewController {
     var comments = [Comment]()
     var movie:MovieDetail?
     
-    var fieldValue: Any?
-    var fieldValue2: Any?
-    
     @IBOutlet var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupNavigation()
-        
-        
-        if let movie_id = id {
-                let url = "http://connect-boxoffice.run.goorm.io/movie?id=\(movie_id)"
-                let commmentsURL = "http://connect-boxoffice.run.goorm.io/comments?movie_id=\(movie_id)"
-            
-                getJsonFromURL(getURL: url)
-                getJsonFromCommentURL(getURL: commmentsURL)
-        }
+        fetchData()
         
         tableView.delegate = self
         tableView.dataSource = self
-        
         tableView.rowHeight = UITableView.automaticDimension
     }
-    
+    func fetchData(){
+        if let movie_id = self.id {
+            MovieListAPI.shared.getJsonFromUrlWithMoiveId(movieId: movie_id) { [weak self] (CommentList, error) in
+                
+                if error != nil {
+                    let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
+                    let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
+                    alter.addAction(action)
+                    self.present(alter, animated: true, completion: nil)
+                }
+                
+                guard let `self` = self else {return}
+                guard let CommentList = CommentList else {return}
+                self.comments = CommentList.comments
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+            
+            MovieListAPI.shared.getJsonFromUrlMovieDetail(movieId: movie_id) { [weak self] (MovieDetail, error) in
+                if error != nil {
+                    let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
+                    let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
+                    alter.addAction(action)
+                    self.present(alter, animated: true, completion: nil)
+                }
+                
+                guard let `self` = self else {return}
+                guard let MovieDetail = MovieDetail else {return}
+                self.movie = MovieDetail
+                
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        }
+    }
+
     @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer)
     {
         let tappedImage = tapGestureRecognizer.view as! UIImageView
-        
         let showVC = self.storyboard?.instantiateViewController(withIdentifier: "MovieFullImageVC") as! MovieFullImageVC
-        
         self.present(showVC, animated: false) {
             showVC.fullScreen.image = tappedImage.image
         }
-        
     }
-    
     func setupNavigation() {
         navigationItem.title = navigationTitle
     }
-    
-    func getJsonFromCommentURL(getURL: String) {
-        guard let url = URL(string: getURL) else {return}
-        
-        URLSession.shared.dataTask(with: url) { [weak self] (datas, response, error) in
-           DispatchQueue.main.async {
-                guard let `self` = self else {return}
-            
-                let httpResponse = response as! HTTPURLResponse
-                self.fieldValue = httpResponse.allHeaderFields["Content-Length"]
-            
-                if error != nil {
-                    let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
-                    let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
-                    alter.addAction(action)
-                    self.present(alter, animated: true, completion: nil)
-                }
-                guard let data = datas else {return}
-            
-                do{
-                    let one = try JSONDecoder().decode(CommentList.self, from: data)
-                    self.comments = one.comments
-                    self.tableView.reloadData()
-                }catch{
-                    let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
-                    let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
-                    alter.addAction(action)
-                    self.present(alter, animated: true, completion: nil)
-                    print("error getJsonFromCommentURL")
-                }
-            }
-        }.resume()
-    }
-    
-    func getJsonFromURL(getURL: String) {
-        guard let url = URL(string: getURL) else {return}
-        URLSession.shared.dataTask(with: url) { [weak self] (datas, response, error) in
-            DispatchQueue.main.async {
-                guard let `self` = self else {return}
-                
-                let httpResponse = response as! HTTPURLResponse
-                self.fieldValue2 = httpResponse.allHeaderFields["Content-Length"]
-                print("Content-Length = \(self.fieldValue2!)")
-                
-                if error != nil {
-                    let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
-                    let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
-                    alter.addAction(action)
-                    self.present(alter, animated: true, completion: nil)
-                }
-                
-                //response를 확인해보면 status code는 200으로 문제가 없지만 content-length가 가끔씩 짧은게 전송된다.
-                //print(response.debugDescription)
-                //10번에 1번꼴로 데이터를 받아오지 못함.
-                guard let data = datas else {return}
-                
-                do{
-                    let detail = try JSONDecoder().decode(MovieDetail.self, from: data)
-                    self.movie = detail
-                    self.tableView.reloadData()
-                    
-                }catch{
-                    let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
-                    let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
-                    alter.addAction(action)
-                    self.present(alter, animated: true, completion: nil)
-                    print("Error getJsonFromURL")
-                }
-            }
-        }.resume()
-    }
-    
 }
 
 extension DetailMovieVC: UITableViewDelegate {
@@ -169,7 +120,7 @@ extension DetailMovieVC: UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
-            let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId") as! posterCell
+            let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId") as! DetailViewPosterCell
             let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
             
             cell.poster.isUserInteractionEnabled = true
@@ -187,18 +138,16 @@ extension DetailMovieVC: UITableViewDataSource{
             }
             return cell
         }else if indexPath.section == 1{
-            let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId1") as! contentsCell
+            let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId1") as! DetailViewContentsCell
             cell.content.text = self.movie?.synopsis
             cell.content.isScrollEnabled = false
             cell.content.isEditable = false
             return cell
         }else {
-            let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId2") as! commentCell
+            let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId2") as! DetailViewCommentCell
             let comment = self.comments[indexPath.row]
             cell.writer.text = comment.writer
             cell.rating.text = "\(comment.rating)"
-            
-            
             let date = Date(timeIntervalSince1970: comment.timestamp)
             
             let dateFormatter = DateFormatter()
@@ -207,7 +156,6 @@ extension DetailMovieVC: UITableViewDataSource{
             dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss" //Specify your format that you want
             let strDate = dateFormatter.string(from: date)
             
-
             cell.timestamp.text = "\(strDate)"
             cell.contents.text = comment.contents
             return cell
