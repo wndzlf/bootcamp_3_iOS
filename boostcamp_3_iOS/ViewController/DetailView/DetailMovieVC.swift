@@ -31,6 +31,7 @@ class DetailMovieVC: UIViewController {
     func fetchData(){
         if let movie_id = self.id {
             MovieListAPI.shared.getJsonFromUrlWithMoiveId(movieId: movie_id) { [weak self] (CommentList, error) in
+                guard let `self` = self else {return}
                 
                 if error != nil {
                     let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
@@ -39,7 +40,6 @@ class DetailMovieVC: UIViewController {
                     self.present(alter, animated: true, completion: nil)
                 }
                 
-                guard let `self` = self else {return}
                 guard let CommentList = CommentList else {return}
                 self.comments = CommentList.comments
                 
@@ -49,6 +49,7 @@ class DetailMovieVC: UIViewController {
             }
             
             MovieListAPI.shared.getJsonFromUrlMovieDetail(movieId: movie_id) { [weak self] (MovieDetail, error) in
+                guard let `self` = self else {return}
                 if error != nil {
                     let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
                     let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
@@ -56,7 +57,7 @@ class DetailMovieVC: UIViewController {
                     self.present(alter, animated: true, completion: nil)
                 }
                 
-                guard let `self` = self else {return}
+                
                 guard let MovieDetail = MovieDetail else {return}
                 self.movie = MovieDetail
                 
@@ -128,6 +129,7 @@ extension DetailMovieVC: UITableViewDataSource{
             
             if let movie = self.movie {
                 let url = URL(string: movie.image)!
+                cell.poster.image = UIImage(named: "play-button")
                 cell.poster.load(url: url)
                 cell.title.text = movie.title
                 cell.date.text = movie.date

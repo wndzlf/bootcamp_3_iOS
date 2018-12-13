@@ -17,6 +17,7 @@ enum filteringMethod:Int {
 class CollectionVC: UIViewController {
     var movies = [Movie]()
     var filterType: filteringMethod?
+    private var refreshControl = UIRefreshControl()
 
     @IBOutlet var collectionView: UICollectionView!
     
@@ -29,8 +30,17 @@ class CollectionVC: UIViewController {
         collectionView.dataSource = self
         
         setupFiltering(filterType)
+        collectionView.addSubview(refreshControl)
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
         
         NotificationCenter.default.addObserver(self, selector: #selector(changeFilter(_:)), name: Notification.Name(rawValue: "filtering2"), object: nil)
+    }
+    
+    @objc func refreshData() {
+        if let filter = filterType {
+            fetchData(filter)
+            self.refreshControl.endRefreshing()
+        }
     }
     
     func setupFiltering(_ filterType: filteringMethod?){

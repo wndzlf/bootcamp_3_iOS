@@ -26,6 +26,7 @@ class MovieFullImageVC: UIViewController {
     override var prefersStatusBarHidden: Bool {
         return true
     }
+    
     // MARK:- TapScreen
     @objc func tapScreen(_ sender: UITapGestureRecognizer) {
         dismiss(animated: true, completion: nil)

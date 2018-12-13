@@ -15,7 +15,8 @@ class TableVC: UIViewController  {
     // Mark:- Property
     var movies = [Movie]()
     var filterType: filteringMethod?
-    private let refreshControl = UIRefreshControl()
+    
+    private var refreshControl = UIRefreshControl()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,11 +25,12 @@ class TableVC: UIViewController  {
         tableview.dataSource = self
         tableview.delegate = self
         
-        tableview.addSubview(refreshControl)
-        refreshControl.addTarget(self, action: #selector(refreshWeatherData(_:)), for: .valueChanged)
+        filterType = filteringMethod.init(rawValue: 0)
+        guard let fetchfilter = filterType else {return}
+        fetchData(fetchfilter)
         
-        guard let filterType = filteringMethod.init(rawValue: 0) else {return}
-        fetchData(filterType)
+        tableview.addSubview(refreshControl)
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
         
         NotificationCenter.default.addObserver(self, selector: #selector(changeFilter(_:)), name: Notification.Name(rawValue: "filtering"), object: nil)
     }
@@ -51,8 +53,11 @@ class TableVC: UIViewController  {
         }
     }
     
-    @objc func refreshWeatherData(_ sender:Any) {
-        
+    @objc func refreshData() {
+        if let filter = filterType {
+            fetchData(filter)
+            self.refreshControl.endRefreshing()
+        }
     }
     
     @objc func changeFilter(_ notification: Notification) {
@@ -193,7 +198,6 @@ extension UIImageView {
     }
     
     func load(url: URL) {
-        self.image = UIImage(named: "profile2")
         getData(from: url) { [weak self] data, response, error in
             guard let data = data, error == nil else { return }
             DispatchQueue.main.async() {

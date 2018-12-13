@@ -68,7 +68,7 @@ struct MovieListAPI:APIManager {
             }catch{
                 print("JSON Parising Error")
             }
-            }.resume()
+        }.resume()
     }
     
 
