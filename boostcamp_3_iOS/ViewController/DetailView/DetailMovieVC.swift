@@ -162,6 +162,7 @@ extension DetailMovieVC: UITableViewDataSource{
             let strDate = dateFormatter.string(from: date)
             
             cell.timestamp.text = "\(strDate)"
+            cell.timestamp.sizeToFit()
             cell.contents.text = comment.contents
             return cell
         }
