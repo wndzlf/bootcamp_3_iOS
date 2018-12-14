@@ -16,7 +16,7 @@ struct MovieListAPI:APIManager {
     var baseURL = url("")
     
     func getJsonFromUrlWithFilter(filterType: filteringMethod,  completionHandler:@escaping ( (MovieList?, Error?) -> Void )) {
-        let baseWithFilterTypeURL = baseURL + "movies?/order_type=" + "\(filterType.rawValue)"
+        let baseWithFilterTypeURL = baseURL + "movies?order_type=" + "\(filterType.rawValue)"
         guard let url = URL(string: baseWithFilterTypeURL) else {return}
         URLSession.shared.dataTask(with: url) {(datas, response, error) in
             if error != nil {

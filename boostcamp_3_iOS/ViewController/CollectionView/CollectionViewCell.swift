@@ -14,5 +14,7 @@ class CollectionViewCell: UICollectionViewCell {
     @IBOutlet var title: UILabel!
     @IBOutlet var rating: UILabel!
     @IBOutlet var date: UILabel!
+    @IBOutlet var movieAge: UIImageView!
+    @IBOutlet var rate: UILabel!
     
 }

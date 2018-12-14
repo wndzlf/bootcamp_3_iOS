@@ -57,11 +57,9 @@ class DetailMovieVC: UIViewController {
                     self.present(alter, animated: true, completion: nil)
                 }
                 
-                
                 guard let MovieDetail = MovieDetail else {return}
                 self.movie = MovieDetail
-                
-                
+            
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
@@ -135,7 +133,9 @@ extension DetailMovieVC: UITableViewDataSource{
                 cell.date.text = movie.date
                 cell.genre.text = movie.genre
                 cell.reservation_rate.text = "\(movie.reservation_rate)"
+                cell.reservation_rate.sizeToFit()
                 cell.user_rating.text = "\(movie.user_rating)"
+                cell.user_rating.sizeToFit()
                 cell.audience.text = "\(movie.audience)"
             }
             return cell

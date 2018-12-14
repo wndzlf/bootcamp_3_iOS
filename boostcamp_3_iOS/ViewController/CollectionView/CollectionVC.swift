@@ -181,8 +181,23 @@ extension CollectionVC: UICollectionViewDataSource{
         
         let movie = self.movies[indexPath.row]
         cell.title.text = movie.title
-        cell.rating.text = "\(movie.reservation_rate)"
+        cell.title.sizeToFit()
+        cell.rating.text = "  / \(movie.reservation_rate)%"
+        cell.rating.sizeToFit()
         cell.date.text = movie.date
+        cell.date.sizeToFit()
+        cell.rate.text = "\(indexPath.row+1)위 (\(movie.user_rating))"
+        cell.rate.sizeToFit()
+        
+        if movie.grade == 0 {
+            cell.movieAge.image = UIImage(named:"all")
+        }else if movie.grade == 12 {
+            cell.movieAge.image = UIImage(named:"12")
+        }else if movie.grade == 15 {
+            cell.movieAge.image = UIImage(named:"15")
+        }else  {
+            cell.movieAge.image = UIImage(named:"19")
+        }
         
         let imageURL = URL(string: movie.thumb)!
         cell.poster.load(url: imageURL)

@@ -17,6 +17,7 @@ class TableViewCell: UITableViewCell {
     @IBOutlet var movieGrade: UILabel!
     @IBOutlet var movieDate: UILabel!
     @IBOutlet var progressLabel: UILabel!
+    @IBOutlet var movieAge: UIImageView!
     
     
     override func awakeFromNib() {

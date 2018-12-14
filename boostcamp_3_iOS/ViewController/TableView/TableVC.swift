@@ -47,6 +47,7 @@ class TableVC: UIViewController  {
                 alter.addAction(action)
                 self.present(alter, animated: true, completion: nil)
             }
+            
             DispatchQueue.main.async {
                 self.tableview.reloadData()
             }
@@ -159,10 +160,25 @@ extension TableVC: UITableViewDataSource{
         let movie = movies[indexPath.row]
     
         cell.movieDate.text = "개봉일: \(movie.date)"
+        cell.movieDate.sizeToFit()
         cell.movieReserRate.text = "예매율:\(movie.reservation_rate)"
+        cell.movieReserRate.sizeToFit()
         cell.movieGrade.text = "예매순위:\(movie.reservation_grade)"
+        cell.movieGrade.sizeToFit()
         cell.movieRate.text = "평점:\(movie.user_rating)"
+        cell.movieRate.sizeToFit()
         cell.movieTitle.text = movie.title
+        cell.movieTitle.sizeToFit()
+        
+        if movie.grade == 0{
+            cell.movieAge.image = UIImage(named: "all")
+        }else if movie.grade == 12 {
+            cell.movieAge.image = UIImage(named: "12")
+        }else if movie.grade == 15 {
+            cell.movieAge.image = UIImage(named: "15")
+        }else {
+            cell.movieAge.image = UIImage(named: "19")
+        }
         
         
         //download in background
@@ -179,7 +195,6 @@ extension TableVC: UITableViewDelegate {
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detailmoiveVC = self.storyboard?.instantiateViewController(withIdentifier: "DetailMovie") as! DetailMovieVC
-        print("objectIdentifier \(ObjectIdentifier(detailmoiveVC).debugDescription)")
         
         let backButton = UIBarButtonItem.init(title: "영화목록", style: UIBarButtonItem.Style.plain, target: nil, action: nil)
         navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
