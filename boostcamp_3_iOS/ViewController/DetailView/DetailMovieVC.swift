@@ -130,8 +130,11 @@ extension DetailMovieVC: UITableViewDataSource{
                 cell.poster.image = UIImage(named: "play-button")
                 cell.poster.load(url: url)
                 cell.title.text = movie.title
+                cell.title.sizeToFit()
                 cell.date.text = movie.date
+                cell.date.sizeToFit()
                 cell.genre.text = movie.genre
+                cell.genre.sizeToFit()
                 cell.reservation_rate.text = "\(movie.reservation_rate)"
                 cell.reservation_rate.sizeToFit()
                 cell.user_rating.text = "\(movie.user_rating)"
