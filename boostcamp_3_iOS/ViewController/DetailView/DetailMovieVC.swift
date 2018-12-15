@@ -27,6 +27,7 @@ class DetailMovieVC: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableView.automaticDimension
+        
     }
     func fetchData(){
         if let movie_id = self.id {
@@ -152,14 +153,78 @@ extension DetailMovieVC: UITableViewDataSource{
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId2") as! DetailViewCommentCell
             let comment = self.comments[indexPath.row]
             cell.writer.text = comment.writer
-            cell.rating.text = "\(comment.rating)"
+            cell.writer.sizeToFit()
+            //cell.rating.text = "\(comment.rating)"
             let date = Date(timeIntervalSince1970: comment.timestamp)
             
             let dateFormatter = DateFormatter()
-            dateFormatter.timeZone = TimeZone(abbreviation: "GMT") //Set timezone that you want
+            dateFormatter.timeZone = TimeZone(abbreviation: "GMT")
             dateFormatter.locale = NSLocale.current
-            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss" //Specify your format that you want
+            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
             let strDate = dateFormatter.string(from: date)
+            
+            cell.star1.image = nil
+            cell.star2.image = nil
+            cell.star3.image = nil
+            cell.star4.image = nil
+            cell.star5.image = nil
+            
+            switch comment.rating {
+                case 0...1.0:
+                    cell.star1.image = UIImage(named: "halfStar")
+                    break
+                case 1.1...2.0:
+                    cell.star1.image = UIImage(named: "Star")
+                    break
+                case 2.1...3.0:
+                    cell.star1.image = UIImage(named: "Star")
+                    cell.star2.image = UIImage(named: "halfStar")
+                    break
+                case 3.1...4.0:
+                    cell.star1.image = UIImage(named: "Star")
+                    cell.star2.image = UIImage(named: "Star")
+                    break
+                case 4.1...5.0:
+                    cell.star1.image = UIImage(named: "Star")
+                    cell.star2.image = UIImage(named: "Star")
+                    cell.star3.image = UIImage(named: "halfStar")
+                    break
+                case 5.1...6.0:
+                    cell.star1.image = UIImage(named: "Star")
+                    cell.star2.image = UIImage(named: "Star")
+                    cell.star3.image = UIImage(named: "Star")
+                    break
+                case 6.1...7.0:
+                    cell.star1.image = UIImage(named: "Star")
+                    cell.star2.image = UIImage(named: "Star")
+                    cell.star3.image = UIImage(named: "Star")
+                    cell.star4.image = UIImage(named: "halfStar")
+                    break
+                case 7.1...8.0:
+                    cell.star1.image = UIImage(named: "Star")
+                    cell.star2.image = UIImage(named: "Star")
+                    cell.star3.image = UIImage(named: "Star")
+                    cell.star4.image = UIImage(named: "Star")
+                    break
+                case 8.1...9.0:
+                    cell.star1.image = UIImage(named: "Star")
+                    cell.star2.image = UIImage(named: "Star")
+                    cell.star3.image = UIImage(named: "Star")
+                    cell.star4.image = UIImage(named: "Star")
+                    cell.star5.image = UIImage(named: "halfStar")
+                    break
+                case 9.1...10.0:
+                    cell.star1.image = UIImage(named: "Star")
+                    cell.star2.image = UIImage(named: "Star")
+                    cell.star3.image = UIImage(named: "Star")
+                    cell.star4.image = UIImage(named: "Star")
+                    cell.star5.image = UIImage(named: "Star")
+                    break
+                default:
+                    break
+            }
+            
+            print(comment.rating)
             
             cell.timestamp.text = "\(strDate)"
             cell.timestamp.sizeToFit()
