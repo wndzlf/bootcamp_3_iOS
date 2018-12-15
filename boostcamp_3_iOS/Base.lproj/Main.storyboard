@@ -119,7 +119,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" id="bx4-YQ-CIa">
-                        <barButtonItem key="rightBarButtonItem" title="Item" id="xZL-ke-k6V">
+                        <barButtonItem key="rightBarButtonItem" title="정렬" id="xZL-ke-k6V">
                             <connections>
                                 <action selector="flteringButton:" destination="BYZ-38-t0r" id="4jX-BT-IGP"/>
                             </connections>
@@ -133,12 +133,13 @@
             </objects>
             <point key="canvasLocation" x="1681" y="-564"/>
         </scene>
-        <!--Item-->
+        <!--Navigation Controller-->
         <scene sceneID="rEl-fU-A3D">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="HS3-x6-3h8" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="ZAz-1e-1NC"/>
+                    <tabBarItem key="tabBarItem" title="" image="table" id="7sK-Cz-a8A"/>
                     <toolbarItems/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="DE2-gB-naQ">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -152,12 +153,13 @@
             </objects>
             <point key="canvasLocation" x="980" y="-564.46776611694156"/>
         </scene>
-        <!--Item-->
+        <!--Navigation Controller-->
         <scene sceneID="IzS-Ax-udY">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="brk-ut-zBM" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="Mbf-Cb-uJU"/>
+                    <tabBarItem key="tabBarItem" title="" image="collection" id="oki-0J-px9"/>
                     <toolbarItems/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="gaZ-Up-IMv">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -200,21 +202,21 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="170" height="215"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ukw-2j-pDJ">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ukw-2j-pDJ">
                                                     <rect key="frame" x="7" y="219" width="124" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Em5-ct-vBz">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Em5-ct-vBz">
                                                     <rect key="frame" x="70" y="245" width="56" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ymH-uP-rmO">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ymH-uP-rmO">
                                                     <rect key="frame" x="7" y="245" width="56" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -225,7 +227,7 @@
                                                     <rect key="frame" x="131" y="0.0" width="39" height="35"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9ka-za-b6D">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9ka-za-b6D">
                                                     <rect key="frame" x="7" y="270" width="124" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -612,10 +614,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="I1o-DJ-IMN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3065" y="-564"/>
+            <point key="canvasLocation" x="3009" y="-564"/>
         </scene>
     </scenes>
     <resources>
+        <image name="collection" width="37.5" height="37.5"/>
         <image name="profile2" width="433" height="424"/>
+        <image name="table" width="37.5" height="37.5"/>
     </resources>
 </document>

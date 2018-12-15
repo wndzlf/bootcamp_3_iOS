@@ -9,15 +9,11 @@
 import UIKit
 
 class DetailMovieVC: UIViewController {
-    
     var id: String?
     var navigationTitle: String?
-    
     var comments = [Comment]()
     var movie:MovieDetail?
-    
     @IBOutlet var tableView: UITableView!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -27,20 +23,18 @@ class DetailMovieVC: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableView.automaticDimension
-        
     }
+    
     func fetchData(){
         if let movie_id = self.id {
             MovieListAPI.shared.getJsonFromUrlWithMoiveId(movieId: movie_id) { [weak self] (CommentList, error) in
                 guard let `self` = self else {return}
-                
                 if error != nil {
                     let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
                     let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
                     alter.addAction(action)
                     self.present(alter, animated: true, completion: nil)
                 }
-                
                 guard let CommentList = CommentList else {return}
                 self.comments = CommentList.comments
                 
@@ -128,7 +122,7 @@ extension DetailMovieVC: UITableViewDataSource{
             
             if let movie = self.movie {
                 let url = URL(string: movie.image)!
-                cell.poster.image = UIImage(named: "play-button")
+                cell.poster.image = UIImage(named: "cinema")
                 cell.poster.load(url: url)
                 cell.title.text = movie.title
                 cell.title.sizeToFit()
@@ -223,9 +217,6 @@ extension DetailMovieVC: UITableViewDataSource{
                 default:
                     break
             }
-            
-            print(comment.rating)
-            
             cell.timestamp.text = "\(strDate)"
             cell.timestamp.sizeToFit()
             cell.contents.text = comment.contents

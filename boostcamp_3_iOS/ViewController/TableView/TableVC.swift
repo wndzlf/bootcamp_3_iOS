@@ -180,7 +180,6 @@ extension TableVC: UITableViewDataSource{
             cell.movieAge.image = UIImage(named: "19")
         }
         
-        
         //download in background
         let imageURL = URL(string: movie.thumb)!
         cell.movieImage.load(url: imageURL)
