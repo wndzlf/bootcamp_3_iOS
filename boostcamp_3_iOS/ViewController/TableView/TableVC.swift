@@ -67,14 +67,14 @@ class TableVC: UIViewController  {
     
     @objc func changeFilter(_ notification: Notification) {
         if let dict = notification.userInfo as NSDictionary? {
-            if let filterType = dict["filterType"] as? filteringMethod{
+            if let filterType = dict["filterType"] as? filteringMethod {
                 if filterType.rawValue == 0 {
                     self.navigationItem.title = "예매율순"
                     self.fetchData(filterType)
-                }else if filterType.rawValue == 1 {
+                } else if filterType.rawValue == 1 {
                     self.navigationItem.title = "큐레이션"
                     self.fetchData(filterType)
-                }else {
+                } else {
                     self.navigationItem.title = "개봉일순"
                     self.fetchData(filterType)
                 }
@@ -89,56 +89,22 @@ class TableVC: UIViewController  {
         let reservationRate = UIAlertAction(title: "예매율", style: .default) { [weak self] (action) in
             self?.navigationItem.title = "예매율순"
             self?.filterType = filteringMethod.init(rawValue: 0)
-            guard let filter = self?.filterType else { return }
-            self?.fetchData(filter)
-
-            let dictat = ["filterType": self?.filterType]
-            NotificationCenter.default.post(name: Notification.Name("filtering2"), object: nil, userInfo: dictat as [AnyHashable : Any])
             
-            guard let nc = self?.tabBarController?.viewControllers?[1] as? UINavigationController else { return }
-            
-            if nc.topViewController is CollectionVC {
-                guard let svc = nc.topViewController as? CollectionVC else { return }
-                svc.filterType = self?.filterType
-            }
+            self?.changeFilterTypeOfCollectionView(self?.filterType)
         }
         
         let quaration = UIAlertAction(title: "큐레이션", style: .default) { [weak self] (action) in
             self?.navigationItem.title = "큐레이션"
             self?.filterType = filteringMethod.init(rawValue: 1)
             
-            guard let filter = self?.filterType else { return }
-            
-            self?.fetchData(filter)
-            
-            let dictat = ["filterType": self?.filterType]
-            NotificationCenter.default.post(name: Notification.Name("filtering2"), object: nil, userInfo: dictat as [AnyHashable : Any])
-            
-            guard let nc = self?.tabBarController?.viewControllers?[1] as? UINavigationController else { return }
-            
-            if nc.topViewController is CollectionVC {
-                guard let svc = nc.topViewController as? CollectionVC else { return }
-                svc.filterType = self?.filterType
-            }
+            self?.changeFilterTypeOfCollectionView(self?.filterType)
         }
         
         let openTime = UIAlertAction(title: "개봉일", style: .default) { [weak self] (action) in
             self?.navigationItem.title = "개봉일순"
             self?.filterType = filteringMethod.init(rawValue: 2)
             
-            guard let filter = self?.filterType else { return }
-            
-            self?.fetchData(filter)
-            
-            let dictat = ["filterType": self?.filterType]
-            NotificationCenter.default.post(name: Notification.Name("filtering2"), object: nil, userInfo: dictat as [AnyHashable : Any])
-            
-            guard let nc = self?.tabBarController?.viewControllers?[1] as? UINavigationController else { return }
-            
-            if nc.topViewController is CollectionVC {
-                guard let svc = nc.topViewController as? CollectionVC else { return }
-                svc.filterType = self?.filterType
-            }
+            self?.changeFilterTypeOfCollectionView(self?.filterType)
         }
         
         let cancle = UIAlertAction(title: "취소", style: .cancel)
@@ -149,6 +115,22 @@ class TableVC: UIViewController  {
         actionSheet.addAction(cancle)
         
         self.present(actionSheet, animated: true, completion: nil)
+    }
+    
+    func changeFilterTypeOfCollectionView(_ filterType: filteringMethod?) {
+        guard let filter = filterType else { return }
+        
+        self.fetchData(filter)
+        
+        let dictat = ["filterType": filterType]
+        NotificationCenter.default.post(name: Notification.Name("filtering2"), object: nil, userInfo: dictat as [AnyHashable : Any])
+        
+        guard let nc = self.tabBarController?.viewControllers?[1] as? UINavigationController else { return }
+        
+        if nc.topViewController is CollectionVC {
+            guard let svc = nc.topViewController as? CollectionVC else { return }
+            svc.filterType = self.filterType
+        }
     }
 
     func setupNavigation() {

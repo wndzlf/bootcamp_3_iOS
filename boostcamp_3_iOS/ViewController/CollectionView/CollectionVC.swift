@@ -83,36 +83,21 @@ class CollectionVC: UIViewController {
             self?.navigationItem.title = "예매율순"
             self?.filterType = filteringMethod.init(rawValue: 0)
             
-            guard let filter = self?.filterType else { return }
-            
-            self?.fetchData(filter)
-            
-            let dictat = ["filterType": self?.filterType]
-            NotificationCenter.default.post(name: Notification.Name("filtering"), object: nil, userInfo: dictat as [AnyHashable : Any])
+            self?.changeFilterTypeOfTableView(self?.filterType)
         }
         
         let quaration = UIAlertAction(title: "큐레이션", style: .default) { [weak self] (action) in
             self?.navigationItem.title = "큐레이션"
             self?.filterType = filteringMethod.init(rawValue: 1)
             
-            guard let filter = self?.filterType else { return }
-            
-            self?.fetchData(filter)
-            
-            let dictat = ["filterType": self?.filterType]
-            NotificationCenter.default.post(name: Notification.Name("filtering"), object: nil, userInfo: dictat as [AnyHashable : Any])
+            self?.changeFilterTypeOfTableView(self?.filterType)
         }
         
         let openTime = UIAlertAction(title: "개봉일", style: .default) { [weak self] (action) in
             self?.navigationItem.title = "개봉일순"
             self?.filterType = filteringMethod.init(rawValue: 2)
             
-            guard let filter = self?.filterType else { return }
-            
-            self?.fetchData(filter)
-            
-            let dictat = ["filterType": self?.filterType]
-            NotificationCenter.default.post(name: Notification.Name("filtering"), object: nil, userInfo: dictat as [AnyHashable : Any])
+            self?.changeFilterTypeOfTableView(self?.filterType)
         }
         
         let cancle = UIAlertAction(title: "취소", style: .cancel)
@@ -123,6 +108,15 @@ class CollectionVC: UIViewController {
         actionSheet.addAction(cancle)
         
         self.present(actionSheet, animated: true, completion: nil)
+    }
+    
+    func changeFilterTypeOfTableView(_ filterType: filteringMethod?) {
+        guard let filter = self.filterType else { return }
+        
+        self.fetchData(filter)
+        
+        let dictat = ["filterType": self.filterType]
+        NotificationCenter.default.post(name: Notification.Name("filtering"), object: nil, userInfo: dictat as [AnyHashable : Any])
     }
     
     func setupNavigation() {
