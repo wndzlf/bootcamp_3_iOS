@@ -37,8 +37,8 @@ class TableVC: UIViewController  {
     
     func fetchData(_ filterType: filteringMethod) {
         MovieListAPI.shared.getJsonFromUrlWithFilter(filterType: filterType) { [weak self] (movieList, error) in
-            guard let `self` = self else {return}
-            guard let movieList = movieList else {return}
+            guard let `self` = self else { return }
+            guard let movieList = movieList else { return }
             self.movies = movieList.movies
             
             if error != nil {
@@ -83,10 +83,10 @@ class TableVC: UIViewController  {
         
         //예매율 , 큐레이션, 개봉일 정렬
         let reservationRate = UIAlertAction(title: "예매율", style: .default) { [weak self] (action) in
-            guard let `self` = self else {return}
+            guard let `self` = self else { return }
             self.navigationItem.title = "예매율순"
             self.filterType = filteringMethod.init(rawValue: 0)
-            guard let filter = self.filterType else {return}
+            guard let filter = self.filterType else { return }
             self.fetchData(filter)
 
             let dictat = ["filterType": self.filterType]
@@ -100,10 +100,10 @@ class TableVC: UIViewController  {
         }
         
         let quaration = UIAlertAction(title: "큐레이션", style: .default) { [weak self](action) in
-            guard let `self` = self else {return}
+            guard let `self` = self else { return }
             self.navigationItem.title = "큐레이션"
             self.filterType = filteringMethod.init(rawValue: 1)
-            guard let filter = self.filterType else {return}
+            guard let filter = self.filterType else { return }
             self.fetchData(filter)
             
             let dictat = ["filterType": self.filterType]
@@ -117,10 +117,10 @@ class TableVC: UIViewController  {
         }
         
         let openTime = UIAlertAction(title: "개봉일", style: .default) { [weak self] (action) in
-            guard let `self` = self else {return}
+            guard let `self` = self else { return }
             self.navigationItem.title = "개봉일순"
             self.filterType = filteringMethod.init(rawValue: 2)
-            guard let filter = self.filterType else {return}
+            guard let filter = self.filterType else { return }
             self.fetchData(filter)
             
             let dictat = ["filterType": self.filterType]
@@ -142,9 +142,10 @@ class TableVC: UIViewController  {
         
         self.present(actionSheet, animated: true, completion: nil)
     }
+
     func setupNavigation() {
         navigationItem.title = "예매율순"
-        let barColor = UIColor(red:0.47, green:0.42, blue:0.91, alpha:1.0)
+        let barColor = UIColor(red: 0.47, green: 0.42, blue: 0.91, alpha: 1.0)
         navigationController?.navigationBar.barTintColor = barColor
     }
 }
@@ -170,18 +171,21 @@ extension TableVC: UITableViewDataSource{
         cell.movieTitle.text = movie.title
         cell.movieTitle.sizeToFit()
         
-        if movie.grade == 0{
+        if movie.grade == 0 {
             cell.movieAge.image = UIImage(named: "all")
-        }else if movie.grade == 12 {
+        } else if movie.grade == 12 {
             cell.movieAge.image = UIImage(named: "12")
-        }else if movie.grade == 15 {
+        } else if movie.grade == 15 {
             cell.movieAge.image = UIImage(named: "15")
-        }else {
+        } else {
             cell.movieAge.image = UIImage(named: "19")
         }
         
         //download in background
-        let imageURL = URL(string: movie.thumb)!
+        guard let imageURL = URL(string: movie.thumb) else {
+            return UITableViewCell()
+        }
+        
         cell.movieImage.load(url: imageURL)
     
         return cell
@@ -192,6 +196,7 @@ extension TableVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 120
     }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detailmoiveVC = self.storyboard?.instantiateViewController(withIdentifier: "DetailMovie") as! DetailMovieVC
         
@@ -200,13 +205,13 @@ extension TableVC: UITableViewDelegate {
         
         detailmoiveVC.navigationTitle = movies[indexPath.row].title
         detailmoiveVC.id = movies[indexPath.row].id
+        
         self.navigationController?.pushViewController(detailmoiveVC, animated: true)
     }
 }
 
 //https://medium.com/@rashpindermaan68/downloading-files-in-background-with-urlsessiondownloadtask-swift-xcode-download-progress-ios-2e278d6d76cb
 extension UIImageView {
-    
     func getData(from url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {
         URLSession.shared.dataTask(with: url, completionHandler: completion).resume()
     }

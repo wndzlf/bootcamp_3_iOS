@@ -12,8 +12,9 @@ class DetailMovieVC: UIViewController {
     var id: String?
     var navigationTitle: String?
     var comments = [Comment]()
-    var movie:MovieDetail?
+    var movie: MovieDetail?
     @IBOutlet var tableView: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -25,17 +26,19 @@ class DetailMovieVC: UIViewController {
         tableView.rowHeight = UITableView.automaticDimension
     }
     
-    func fetchData(){
+    func fetchData() {
         if let movie_id = self.id {
             MovieListAPI.shared.getJsonFromUrlWithMoiveId(movieId: movie_id) { [weak self] (CommentList, error) in
-                guard let `self` = self else {return}
+                guard let `self` = self else { return }
+                
                 if error != nil {
                     let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
                     let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
                     alter.addAction(action)
                     self.present(alter, animated: true, completion: nil)
                 }
-                guard let CommentList = CommentList else {return}
+                
+                guard let CommentList = CommentList else { return }
                 self.comments = CommentList.comments
                 
                 DispatchQueue.main.async {
@@ -44,7 +47,8 @@ class DetailMovieVC: UIViewController {
             }
             
             MovieListAPI.shared.getJsonFromUrlMovieDetail(movieId: movie_id) { [weak self] (MovieDetail, error) in
-                guard let `self` = self else {return}
+                guard let `self` = self else { return }
+                
                 if error != nil {
                     let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
                     let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
@@ -52,7 +56,7 @@ class DetailMovieVC: UIViewController {
                     self.present(alter, animated: true, completion: nil)
                 }
                 
-                guard let MovieDetail = MovieDetail else {return}
+                guard let MovieDetail = MovieDetail else { return }
                 self.movie = MovieDetail
             
                 DispatchQueue.main.async {
@@ -62,14 +66,15 @@ class DetailMovieVC: UIViewController {
         }
     }
 
-    @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer)
-    {
+    @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
         let tappedImage = tapGestureRecognizer.view as! UIImageView
         let showVC = self.storyboard?.instantiateViewController(withIdentifier: "MovieFullImageVC") as! MovieFullImageVC
+        
         self.present(showVC, animated: false) {
             showVC.fullScreen.image = tappedImage.image
         }
     }
+    
     func setupNavigation() {
         navigationItem.title = navigationTitle
     }
@@ -80,12 +85,13 @@ extension DetailMovieVC: UITableViewDelegate {
         if indexPath.section == 0 {
             return 240
         //줄거리 길이에 따라 섹션 height 수정하기
-        }else if indexPath.section == 1{
+        } else if indexPath.section == 1 {
             return UITableView.automaticDimension
-        }else {
+        } else {
             return 120
         }
     }
+    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 3
     }
@@ -105,9 +111,9 @@ extension DetailMovieVC: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
             return 1
-        }else if section == 1 {
+        } else if section == 1 {
             return 1
-        }else {
+        } else {
             return self.comments.count
         }
     }
@@ -136,16 +142,20 @@ extension DetailMovieVC: UITableViewDataSource{
                 cell.user_rating.sizeToFit()
                 cell.audience.text = "\(movie.audience)"
             }
+            
             return cell
-        }else if indexPath.section == 1{
+        } else if indexPath.section == 1 {
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId1") as! DetailViewContentsCell
+            
             cell.content.text = self.movie?.synopsis
             cell.content.isScrollEnabled = false
             cell.content.isEditable = false
+            
             return cell
-        }else {
+        } else {
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId2") as! DetailViewCommentCell
             let comment = self.comments[indexPath.row]
+            
             cell.writer.text = comment.writer
             cell.writer.sizeToFit()
             //cell.rating.text = "\(comment.rating)"
@@ -217,6 +227,7 @@ extension DetailMovieVC: UITableViewDataSource{
                 default:
                     break
             }
+            
             cell.timestamp.text = "\(strDate)"
             cell.timestamp.sizeToFit()
             cell.contents.text = comment.contents

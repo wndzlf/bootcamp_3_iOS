@@ -8,7 +8,7 @@
 
 import UIKit
 
-enum filteringMethod:Int {
+enum filteringMethod: Int {
     case reservation_rate = 0
     case quration = 1
     case open = 2
@@ -43,23 +43,22 @@ class CollectionVC: UIViewController {
         }
     }
     
-    func setupFiltering(_ filterType: filteringMethod?){
-        if let filter = filterType{
+    func setupFiltering(_ filterType: filteringMethod?) {
+        if let filter = filterType {
             if filter.rawValue == 0 {
                 self.navigationItem.title = "예매율순"
                 fetchData(filter)
-            }else if filter.rawValue == 1 {
+            } else if filter.rawValue == 1 {
                 self.navigationItem.title = "큐레이션"
                 fetchData(filter)
-            }else if filter.rawValue == 2{
+            } else if filter.rawValue == 2 {
                 self.navigationItem.title = "개봉일순"
                 fetchData(filter)
             }
-        }
-        else {
+        } else {
                 self.navigationItem.title = "예매율순"
                 self.filterType = filteringMethod.init(rawValue: 0)
-                guard let temp = self.filterType else {return}
+                guard let temp = self.filterType else { return }
                 fetchData(temp)
         }
     }
@@ -67,14 +66,14 @@ class CollectionVC: UIViewController {
     @objc func changeFilter(_ notification: Notification) {
         print("changeFilter")
         if let dict = notification.userInfo as NSDictionary? {
-            if let id = dict["filterType"] as? filteringMethod{
+            if let id = dict["filterType"] as? filteringMethod {
                 if id.rawValue == 0 {
                     self.navigationItem.title = "예매율순"
                     fetchData(id)
-                }else if id.rawValue == 1 {
+                } else if id.rawValue == 1 {
                     self.navigationItem.title = "큐레이션"
                     fetchData(id)
-                }else {
+                } else {
                     self.navigationItem.title = "개봉일순"
                     fetchData(id)
                 }
@@ -83,25 +82,31 @@ class CollectionVC: UIViewController {
     }
     
     @IBAction func filteringButton(_ sender: Any) {
-        let actionSheet = UIAlertController(title: "정렬 방식 선택", message:"영화를 어떤 방식으로 정렬할까요?", preferredStyle: .actionSheet)
+        let actionSheet = UIAlertController(title: "정렬 방식 선택", message: "영화를 어떤 방식으로 정렬할까요?", preferredStyle: .actionSheet)
         
         //예매율 , 큐레이션, 개봉일 정렬
         let reservationRate = UIAlertAction(title: "예매율", style: .default) { [weak self] (action) in
-            guard let `self` = self else {return}
+            guard let `self` = self else { return }
+            
             self.navigationItem.title = "예매율순"
             self.filterType = filteringMethod.init(rawValue: 0)
-            guard let filter = self.filterType else {return}
+            
+            guard let filter = self.filterType else { return }
+            
             self.fetchData(filter)
             
             let dictat = ["filterType": self.filterType]
             NotificationCenter.default.post(name: Notification.Name("filtering"), object: nil, userInfo: dictat as [AnyHashable : Any])
         }
         
-        let quaration = UIAlertAction(title: "큐레이션", style: .default) { [weak self](action) in
-            guard let `self` = self else {return}
+        let quaration = UIAlertAction(title: "큐레이션", style: .default) { [weak self] (action) in
+            guard let `self` = self else { return }
+            
             self.navigationItem.title = "큐레이션"
             self.filterType = filteringMethod.init(rawValue: 1)
-            guard let filter = self.filterType else {return}
+            
+            guard let filter = self.filterType else { return }
+            
             self.fetchData(filter)
             
             let dictat = ["filterType": self.filterType]
@@ -109,10 +114,13 @@ class CollectionVC: UIViewController {
         }
         
         let openTime = UIAlertAction(title: "개봉일", style: .default) { [weak self] (action) in
-            guard let `self` = self else {return}
+            guard let `self` = self else { return }
+            
             self.navigationItem.title = "개봉일순"
             self.filterType = filteringMethod.init(rawValue: 2)
-            guard let filter = self.filterType else {return}
+            
+            guard let filter = self.filterType else { return }
+            
             self.fetchData(filter)
             
             let dictat = ["filterType": self.filterType]
@@ -138,8 +146,8 @@ class CollectionVC: UIViewController {
     
     func fetchData(_ filterType: filteringMethod) {
         MovieListAPI.shared.getJsonFromUrlWithFilter(filterType: filterType) { [weak self] (movieList, error) in
-            guard let `self` = self else {return}
-            guard let movieList = movieList else {return}
+            guard let `self` = self else { return }
+            guard let movieList = movieList else { return }
             self.movies = movieList.movies
             
             if error != nil {
@@ -170,8 +178,7 @@ extension CollectionVC: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension CollectionVC: UICollectionViewDataSource{
-    
+extension CollectionVC: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.movies.count
     }
@@ -191,11 +198,11 @@ extension CollectionVC: UICollectionViewDataSource{
         
         if movie.grade == 0 {
             cell.movieAge.image = UIImage(named:"all")
-        }else if movie.grade == 12 {
+        } else if movie.grade == 12 {
             cell.movieAge.image = UIImage(named:"12")
-        }else if movie.grade == 15 {
+        } else if movie.grade == 15 {
             cell.movieAge.image = UIImage(named:"15")
-        }else  {
+        } else {
             cell.movieAge.image = UIImage(named:"19")
         }
         

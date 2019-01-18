@@ -18,7 +18,6 @@ class DetailViewPosterCell: UITableViewCell {
     @IBOutlet var user_rating: UILabel!
     @IBOutlet var audience: UILabel!
     
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -29,5 +28,4 @@ class DetailViewPosterCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-
 }

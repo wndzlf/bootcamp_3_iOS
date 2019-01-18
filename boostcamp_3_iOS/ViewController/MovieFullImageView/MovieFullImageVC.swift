@@ -23,6 +23,7 @@ class MovieFullImageVC: UIViewController {
         
         self.navigationController?.navigationBar.isHidden = true
     }
+    
     override var prefersStatusBarHidden: Bool {
         return true
     }
