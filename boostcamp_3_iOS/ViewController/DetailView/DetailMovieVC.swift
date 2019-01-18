@@ -27,8 +27,9 @@ class DetailMovieVC: UIViewController {
     }
     
     func fetchData() {
-        if let movie_id = self.id {
-            MovieListAPI.shared.getJsonFromUrlWithMoiveId(movieId: movie_id) { [weak self] (CommentList, error) in
+        if let movieId = self.id {
+            let movieUrlString = "comments?movie_id=" + "\(movieId)"
+            MovieListAPI.shared.getJsonFromUrl(movieUrlString) { [weak self] (CommentList: CommentList?, error: Error?) in
                 if error != nil {
                     let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
                     let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
@@ -46,7 +47,8 @@ class DetailMovieVC: UIViewController {
                 }
             }
             
-            MovieListAPI.shared.getJsonFromUrlMovieDetail(movieId: movie_id) { [weak self] (MovieDetail, error) in
+            let movieDetailUrlString = "movie?id=" + "\(movieId)"
+            MovieListAPI.shared.getJsonFromUrl(movieDetailUrlString) { [weak self] (MovieDetail: MovieDetail?, error: Error?) in
                 if error != nil {
                     let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
                     let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)

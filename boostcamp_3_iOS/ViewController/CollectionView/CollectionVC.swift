@@ -122,7 +122,8 @@ class CollectionVC: UIViewController {
     }
 
     func fetchData(_ filterType: filteringMethod) {
-        MovieListAPI.shared.getJsonFromUrlWithFilter(filterType: filterType) { [weak self] (movieList, error) in
+        let urlStirng = "movies?order_type=" + "\(filterType.rawValue)"
+        MovieListAPI.shared.getJsonFromUrl(urlStirng) { [weak self] (movieList: MovieList?, error: Error?) in
             if error != nil {
                 let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
                 let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)

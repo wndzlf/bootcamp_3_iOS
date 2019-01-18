@@ -38,7 +38,8 @@ class TableVC: UIViewController  {
     }
     
     func fetchData(_ filterType: filteringMethod) {
-        MovieListAPI.shared.getJsonFromUrlWithFilter(filterType: filterType) { [weak self] (movieList, error) in
+        let urlStirng = "movies?order_type=" + "\(filterType.rawValue)"
+        MovieListAPI.shared.getJsonFromUrl(urlStirng) { [weak self] (movieList: MovieList?, error: Error?) in
             // error를 먼저 띄워주지 않으면 movieList를 가져오지 못했을 때 에러 알림이 안뜨지 않을까 싶어서 위로 올렸습니다.
             if error != nil {
                 let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
