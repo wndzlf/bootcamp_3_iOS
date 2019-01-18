@@ -39,19 +39,18 @@ class TableVC: UIViewController  {
     
     func fetchData(_ filterType: filteringMethod) {
         MovieListAPI.shared.getJsonFromUrlWithFilter(filterType: filterType) { [weak self] (movieList, error) in
-            guard let `self` = self else { return }
             guard let movieList = movieList else { return }
-            self.movies = movieList.movies
+            self?.movies = movieList.movies
             
             if error != nil {
                 let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
                 let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
                 alter.addAction(action)
-                self.present(alter, animated: true, completion: nil)
+                self?.present(alter, animated: true, completion: nil)
             }
             
             DispatchQueue.main.async {
-                self.tableview.reloadData()
+                self?.tableview.reloadData()
             }
         }
     }
@@ -85,59 +84,57 @@ class TableVC: UIViewController  {
         
         //예매율 , 큐레이션, 개봉일 정렬
         let reservationRate = UIAlertAction(title: "예매율", style: .default) { [weak self] (action) in
-            guard let `self` = self else { return }
-            self.navigationItem.title = "예매율순"
-            self.filterType = filteringMethod.init(rawValue: 0)
-            guard let filter = self.filterType else { return }
-            self.fetchData(filter)
+            self?.navigationItem.title = "예매율순"
+            self?.filterType = filteringMethod.init(rawValue: 0)
+            guard let filter = self?.filterType else { return }
+            self?.fetchData(filter)
 
-            let dictat = ["filterType": self.filterType]
+            let dictat = ["filterType": self?.filterType]
             NotificationCenter.default.post(name: Notification.Name("filtering2"), object: nil, userInfo: dictat as [AnyHashable : Any])
             
-            guard let nc = self.tabBarController?.viewControllers?[1] as? UINavigationController else { return }
+            guard let nc = self?.tabBarController?.viewControllers?[1] as? UINavigationController else { return }
             
             if nc.topViewController is CollectionVC {
                 guard let svc = nc.topViewController as? CollectionVC else { return }
-                svc.filterType = self.filterType
+                svc.filterType = self?.filterType
             }
         }
         
-        let quaration = UIAlertAction(title: "큐레이션", style: .default) { [weak self](action) in
-            guard let `self` = self else { return }
+        let quaration = UIAlertAction(title: "큐레이션", style: .default) { [weak self] (action) in
+            self?.navigationItem.title = "큐레이션"
+            self?.filterType = filteringMethod.init(rawValue: 1)
             
-            self.navigationItem.title = "큐레이션"
-            self.filterType = filteringMethod.init(rawValue: 1)
+            guard let filter = self?.filterType else { return }
             
-            guard let filter = self.filterType else { return }
+            self?.fetchData(filter)
             
-            self.fetchData(filter)
-            
-            let dictat = ["filterType": self.filterType]
+            let dictat = ["filterType": self?.filterType]
             NotificationCenter.default.post(name: Notification.Name("filtering2"), object: nil, userInfo: dictat as [AnyHashable : Any])
             
-            guard let nc = self.tabBarController?.viewControllers?[1] as? UINavigationController else { return }
+            guard let nc = self?.tabBarController?.viewControllers?[1] as? UINavigationController else { return }
             
             if nc.topViewController is CollectionVC {
                 guard let svc = nc.topViewController as? CollectionVC else { return }
-                svc.filterType = self.filterType
+                svc.filterType = self?.filterType
             }
         }
         
         let openTime = UIAlertAction(title: "개봉일", style: .default) { [weak self] (action) in
-            guard let `self` = self else { return }
-            self.navigationItem.title = "개봉일순"
-            self.filterType = filteringMethod.init(rawValue: 2)
-            guard let filter = self.filterType else { return }
-            self.fetchData(filter)
+            self?.navigationItem.title = "개봉일순"
+            self?.filterType = filteringMethod.init(rawValue: 2)
             
-            let dictat = ["filterType": self.filterType]
+            guard let filter = self?.filterType else { return }
+            
+            self?.fetchData(filter)
+            
+            let dictat = ["filterType": self?.filterType]
             NotificationCenter.default.post(name: Notification.Name("filtering2"), object: nil, userInfo: dictat as [AnyHashable : Any])
             
-            guard let nc = self.tabBarController?.viewControllers?[1] as? UINavigationController else { return }
+            guard let nc = self?.tabBarController?.viewControllers?[1] as? UINavigationController else { return }
             
             if nc.topViewController is CollectionVC {
                 guard let svc = nc.topViewController as? CollectionVC else { return }
-                svc.filterType = self.filterType
+                svc.filterType = self?.filterType
             }
         }
         

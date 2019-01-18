@@ -94,30 +94,26 @@ class CollectionVC: UIViewController {
         }
         
         let quaration = UIAlertAction(title: "큐레이션", style: .default) { [weak self] (action) in
-            guard let `self` = self else { return }
+            self?.navigationItem.title = "큐레이션"
+            self?.filterType = filteringMethod.init(rawValue: 1)
             
-            self.navigationItem.title = "큐레이션"
-            self.filterType = filteringMethod.init(rawValue: 1)
+            guard let filter = self?.filterType else { return }
             
-            guard let filter = self.filterType else { return }
+            self?.fetchData(filter)
             
-            self.fetchData(filter)
-            
-            let dictat = ["filterType": self.filterType]
+            let dictat = ["filterType": self?.filterType]
             NotificationCenter.default.post(name: Notification.Name("filtering"), object: nil, userInfo: dictat as [AnyHashable : Any])
         }
         
         let openTime = UIAlertAction(title: "개봉일", style: .default) { [weak self] (action) in
-            guard let `self` = self else { return }
+            self?.navigationItem.title = "개봉일순"
+            self?.filterType = filteringMethod.init(rawValue: 2)
             
-            self.navigationItem.title = "개봉일순"
-            self.filterType = filteringMethod.init(rawValue: 2)
+            guard let filter = self?.filterType else { return }
             
-            guard let filter = self.filterType else { return }
+            self?.fetchData(filter)
             
-            self.fetchData(filter)
-            
-            let dictat = ["filterType": self.filterType]
+            let dictat = ["filterType": self?.filterType]
             NotificationCenter.default.post(name: Notification.Name("filtering"), object: nil, userInfo: dictat as [AnyHashable : Any])
         }
         
@@ -140,19 +136,18 @@ class CollectionVC: UIViewController {
     
     func fetchData(_ filterType: filteringMethod) {
         MovieListAPI.shared.getJsonFromUrlWithFilter(filterType: filterType) { [weak self] (movieList, error) in
-            guard let `self` = self else { return }
             guard let movieList = movieList else { return }
-            self.movies = movieList.movies
+            self?.movies = movieList.movies
             
             if error != nil {
                 let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
                 let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
                 alter.addAction(action)
-                self.present(alter, animated: true, completion: nil)
+                self?.present(alter, animated: true, completion: nil)
             }
             
             DispatchQueue.main.async {
-                self.collectionView.reloadData()
+                self?.collectionView.reloadData()
             }
         }
     }

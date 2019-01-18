@@ -29,38 +29,38 @@ class DetailMovieVC: UIViewController {
     func fetchData() {
         if let movie_id = self.id {
             MovieListAPI.shared.getJsonFromUrlWithMoiveId(movieId: movie_id) { [weak self] (CommentList, error) in
-                guard let `self` = self else { return }
-                
                 if error != nil {
                     let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
                     let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
+                    
                     alter.addAction(action)
-                    self.present(alter, animated: true, completion: nil)
+                    
+                    self?.present(alter, animated: true, completion: nil)
                 }
                 
                 guard let CommentList = CommentList else { return }
-                self.comments = CommentList.comments
+                self?.comments = CommentList.comments
                 
                 DispatchQueue.main.async {
-                    self.tableView.reloadData()
+                    self?.tableView.reloadData()
                 }
             }
             
             MovieListAPI.shared.getJsonFromUrlMovieDetail(movieId: movie_id) { [weak self] (MovieDetail, error) in
-                guard let `self` = self else { return }
-                
                 if error != nil {
                     let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
                     let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
+                    
                     alter.addAction(action)
-                    self.present(alter, animated: true, completion: nil)
+                    
+                    self?.present(alter, animated: true, completion: nil)
                 }
                 
                 guard let MovieDetail = MovieDetail else { return }
-                self.movie = MovieDetail
+                self?.movie = MovieDetail
             
                 DispatchQueue.main.async {
-                    self.tableView.reloadData()
+                    self?.tableView.reloadData()
                 }
             }
         }
