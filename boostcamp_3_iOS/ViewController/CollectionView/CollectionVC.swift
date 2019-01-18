@@ -166,15 +166,18 @@ class CollectionVC: UIViewController {
 
 extension CollectionVC: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let detailmoiveVC = self.storyboard?.instantiateViewController(withIdentifier: "DetailMovie") as! DetailMovieVC
-        print("objectIdentifier \(ObjectIdentifier(detailmoiveVC).debugDescription)")
+        guard let detailmovieVC = self.storyboard?.instantiateViewController(withIdentifier: "DetailMovie") as? DetailMovieVC else {
+            return
+        }
+        
+        print("objectIdentifier \(ObjectIdentifier(detailmovieVC).debugDescription)")
         
         let backButton = UIBarButtonItem.init(title: "영화목록", style: UIBarButtonItem.Style.plain, target: nil, action: nil)
         navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         
-        detailmoiveVC.navigationTitle = movies[indexPath.row].title
-        detailmoiveVC.id = movies[indexPath.row].id
-        self.navigationController?.pushViewController(detailmoiveVC, animated: true)
+        detailmovieVC.navigationTitle = movies[indexPath.row].title
+        detailmovieVC.id = movies[indexPath.row].id
+        self.navigationController?.pushViewController(detailmovieVC, animated: true)
     }
 }
 
@@ -184,9 +187,12 @@ extension CollectionVC: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath) as! CollectionViewCell
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath) as? CollectionViewCell else {
+            return UICollectionViewCell()
+        }
         
         let movie = self.movies[indexPath.row]
+        
         cell.title.text = movie.title
         cell.title.sizeToFit()
         cell.rating.text = "  / \(movie.reservation_rate)%"
@@ -206,7 +212,10 @@ extension CollectionVC: UICollectionViewDataSource {
             cell.movieAge.image = UIImage(named:"19")
         }
         
-        let imageURL = URL(string: movie.thumb)!
+        guard let imageURL = URL(string: movie.thumb) else {
+            return UICollectionViewCell()
+        }
+        
         cell.poster.load(url: imageURL)
         
         return cell

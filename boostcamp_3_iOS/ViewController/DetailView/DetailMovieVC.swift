@@ -67,8 +67,13 @@ class DetailMovieVC: UIViewController {
     }
 
     @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
-        let tappedImage = tapGestureRecognizer.view as! UIImageView
-        let showVC = self.storyboard?.instantiateViewController(withIdentifier: "MovieFullImageVC") as! MovieFullImageVC
+        guard let tappedImage = tapGestureRecognizer.view as? UIImageView else {
+            return
+        }
+        
+        guard let showVC = self.storyboard?.instantiateViewController(withIdentifier: "MovieFullImageVC") as? MovieFullImageVC else {
+            return
+        }
         
         self.present(showVC, animated: false) {
             showVC.fullScreen.image = tappedImage.image
@@ -120,14 +125,20 @@ extension DetailMovieVC: UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
-            let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId") as! DetailViewPosterCell
+            guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId") as? DetailViewPosterCell else {
+                return UITableViewCell()
+            }
+            
             let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
             
             cell.poster.isUserInteractionEnabled = true
             cell.poster.addGestureRecognizer(tapGestureRecognizer)
             
             if let movie = self.movie {
-                let url = URL(string: movie.image)!
+                guard let url = URL(string: movie.image) else {
+                    return UITableViewCell()
+                }
+                
                 cell.poster.image = UIImage(named: "cinema")
                 cell.poster.load(url: url)
                 cell.title.text = movie.title
@@ -145,7 +156,9 @@ extension DetailMovieVC: UITableViewDataSource{
             
             return cell
         } else if indexPath.section == 1 {
-            let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId1") as! DetailViewContentsCell
+            guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId1") as? DetailViewContentsCell else {
+                return UITableViewCell()
+            }
             
             cell.content.text = self.movie?.synopsis
             cell.content.isScrollEnabled = false
@@ -153,7 +166,10 @@ extension DetailMovieVC: UITableViewDataSource{
             
             return cell
         } else {
-            let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId2") as! DetailViewCommentCell
+            guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId2") as? DetailViewCommentCell else {
+                return UITableViewCell()
+            }
+            
             let comment = self.comments[indexPath.row]
             
             cell.writer.text = comment.writer

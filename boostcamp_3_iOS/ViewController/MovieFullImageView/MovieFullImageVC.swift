@@ -32,4 +32,5 @@ class MovieFullImageVC: UIViewController {
     @objc func tapScreen(_ sender: UITapGestureRecognizer) {
         dismiss(animated: true, completion: nil)
     }
+    
 }

@@ -92,26 +92,31 @@ class TableVC: UIViewController  {
             let dictat = ["filterType": self.filterType]
             NotificationCenter.default.post(name: Notification.Name("filtering2"), object: nil, userInfo: dictat as [AnyHashable : Any])
             
-            let nc = self.tabBarController?.viewControllers?[1] as! UINavigationController
+            guard let nc = self.tabBarController?.viewControllers?[1] as? UINavigationController else { return }
+            
             if nc.topViewController is CollectionVC {
-                let svc = nc.topViewController as! CollectionVC
+                guard let svc = nc.topViewController as? CollectionVC else { return }
                 svc.filterType = self.filterType
             }
         }
         
         let quaration = UIAlertAction(title: "큐레이션", style: .default) { [weak self](action) in
             guard let `self` = self else { return }
+            
             self.navigationItem.title = "큐레이션"
             self.filterType = filteringMethod.init(rawValue: 1)
+            
             guard let filter = self.filterType else { return }
+            
             self.fetchData(filter)
             
             let dictat = ["filterType": self.filterType]
             NotificationCenter.default.post(name: Notification.Name("filtering2"), object: nil, userInfo: dictat as [AnyHashable : Any])
             
-            let nc = self.tabBarController?.viewControllers?[1] as! UINavigationController
+            guard let nc = self.tabBarController?.viewControllers?[1] as? UINavigationController else { return }
+            
             if nc.topViewController is CollectionVC {
-                let svc = nc.topViewController as! CollectionVC
+                guard let svc = nc.topViewController as? CollectionVC else { return }
                 svc.filterType = self.filterType
             }
         }
@@ -126,9 +131,10 @@ class TableVC: UIViewController  {
             let dictat = ["filterType": self.filterType]
             NotificationCenter.default.post(name: Notification.Name("filtering2"), object: nil, userInfo: dictat as [AnyHashable : Any])
             
-            let nc = self.tabBarController?.viewControllers?[1] as! UINavigationController
+            guard let nc = self.tabBarController?.viewControllers?[1] as? UINavigationController else { return }
+            
             if nc.topViewController is CollectionVC {
-                let svc = nc.topViewController as! CollectionVC
+                guard let svc = nc.topViewController as? CollectionVC else { return }
                 svc.filterType = self.filterType
             }
         }
@@ -157,7 +163,10 @@ extension TableVC: UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cellId") as! TableViewCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "cellId") as? TableViewCell else {
+            return UITableViewCell()
+        }
+        
         let movie = movies[indexPath.row]
     
         cell.movieDate.text = "개봉일: \(movie.date)"
@@ -198,7 +207,7 @@ extension TableVC: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let detailmoiveVC = self.storyboard?.instantiateViewController(withIdentifier: "DetailMovie") as! DetailMovieVC
+        guard let detailmoiveVC = self.storyboard?.instantiateViewController(withIdentifier: "DetailMovie") as? DetailMovieVC else { return }
         
         let backButton = UIBarButtonItem.init(title: "영화목록", style: UIBarButtonItem.Style.plain, target: nil, action: nil)
         navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
