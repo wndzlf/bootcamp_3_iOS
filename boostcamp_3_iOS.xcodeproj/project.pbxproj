@@ -25,6 +25,7 @@
 		84F2930B21BA12E4006A109B /* MovieDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F2930A21BA12E4006A109B /* MovieDetail.swift */; };
 		84F2930F21BA1313006A109B /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F2930E21BA1313006A109B /* Comment.swift */; };
 		84F2931221BA2F1F006A109B /* MovieFullImageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F2931121BA2F1F006A109B /* MovieFullImageVC.swift */; };
+		D124E64E21F21B9500C0EFF4 /* FilteringMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = D124E64D21F21B9500C0EFF4 /* FilteringMethod.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,7 @@
 		84F2930A21BA12E4006A109B /* MovieDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetail.swift; sourceTree = "<group>"; };
 		84F2930E21BA1313006A109B /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		84F2931121BA2F1F006A109B /* MovieFullImageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieFullImageVC.swift; sourceTree = "<group>"; };
+		D124E64D21F21B9500C0EFF4 /* FilteringMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilteringMethod.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +100,7 @@
 				842D11BA21B78CF900D6EFF7 /* Movie.swift */,
 				84F2930A21BA12E4006A109B /* MovieDetail.swift */,
 				84F2930E21BA1313006A109B /* Comment.swift */,
+				D124E64D21F21B9500C0EFF4 /* FilteringMethod.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -235,6 +238,7 @@
 				84F2930F21BA1313006A109B /* Comment.swift in Sources */,
 				84C620C321BD13C500EBAE14 /* CollectionVC.swift in Sources */,
 				84C620C721BD169A00EBAE14 /* CollectionViewCell.swift in Sources */,
+				D124E64E21F21B9500C0EFF4 /* FilteringMethod.swift in Sources */,
 				84F2930521B9F136006A109B /* DetailViewCommentCell.swift in Sources */,
 				842D11B321B6987F00D6EFF7 /* TableViewCell.swift in Sources */,
 				847B644521C0BCAD00603A18 /* MovieListAPI.swift in Sources */,

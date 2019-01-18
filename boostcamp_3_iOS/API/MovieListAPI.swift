@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-struct MovieListAPI:APIManager {
+struct MovieListAPI: APIManager {
     static let shared = MovieListAPI()
     private init(){}
     

@@ -8,12 +8,6 @@
 
 import UIKit
 
-enum filteringMethod: Int {
-    case reservation_rate = 0
-    case quration = 1
-    case open = 2
-}
-
 class CollectionVC: UIViewController {
     var movies = [Movie]()
     var filterType: filteringMethod?

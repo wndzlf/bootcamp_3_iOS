@@ -26,7 +26,9 @@ class TableVC: UIViewController  {
         tableview.delegate = self
         
         filterType = filteringMethod.init(rawValue: 0)
-        guard let fetchfilter = filterType else {return}
+        
+        guard let fetchfilter = filterType else { return }
+        
         fetchData(fetchfilter)
         
         tableview.addSubview(refreshControl)
@@ -156,8 +158,7 @@ class TableVC: UIViewController  {
     }
 }
 
-extension TableVC: UITableViewDataSource{
-
+extension TableVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return movies.count
     }
