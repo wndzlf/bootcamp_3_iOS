@@ -50,10 +50,10 @@ class CollectionVC: UIViewController {
                 fetchData(filter)
             }
         } else {
-                self.navigationItem.title = "예매율순"
-                self.filterType = filteringMethod.init(rawValue: 0)
-                guard let temp = self.filterType else { return }
-                fetchData(temp)
+            self.navigationItem.title = "예매율순"
+            self.filterType = filteringMethod.init(rawValue: 0)
+            guard let temp = self.filterType else { return }
+            fetchData(temp)
         }
     }
     
@@ -81,23 +81,17 @@ class CollectionVC: UIViewController {
         //예매율 , 큐레이션, 개봉일 정렬
         let reservationRate = UIAlertAction(title: "예매율", style: .default) { [weak self] (action) in
             self?.navigationItem.title = "예매율순"
-            self?.filterType = filteringMethod.init(rawValue: 0)
-            
-            self?.changeFilterTypeOfTableView(self?.filterType)
+            self?.changeFilterTypeOfTableView(0)
         }
         
         let quaration = UIAlertAction(title: "큐레이션", style: .default) { [weak self] (action) in
             self?.navigationItem.title = "큐레이션"
-            self?.filterType = filteringMethod.init(rawValue: 1)
-            
-            self?.changeFilterTypeOfTableView(self?.filterType)
+            self?.changeFilterTypeOfTableView(1)
         }
         
         let openTime = UIAlertAction(title: "개봉일", style: .default) { [weak self] (action) in
             self?.navigationItem.title = "개봉일순"
-            self?.filterType = filteringMethod.init(rawValue: 2)
-            
-            self?.changeFilterTypeOfTableView(self?.filterType)
+            self?.changeFilterTypeOfTableView(2)
         }
         
         let cancle = UIAlertAction(title: "취소", style: .cancel)
@@ -110,7 +104,9 @@ class CollectionVC: UIViewController {
         self.present(actionSheet, animated: true, completion: nil)
     }
     
-    func changeFilterTypeOfTableView(_ filterType: filteringMethod?) {
+    func changeFilterTypeOfTableView(_ filterNumber: Int) {
+        self.filterType = filteringMethod.init(rawValue: filterNumber)
+        
         guard let filter = self.filterType else { return }
         
         self.fetchData(filter)
@@ -125,7 +121,6 @@ class CollectionVC: UIViewController {
         navigationController?.navigationBar.barTintColor = barColor
     }
 
-    
     func fetchData(_ filterType: filteringMethod) {
         MovieListAPI.shared.getJsonFromUrlWithFilter(filterType: filterType) { [weak self] (movieList, error) in
             if error != nil {
