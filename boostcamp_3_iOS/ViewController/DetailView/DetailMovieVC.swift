@@ -12,8 +12,9 @@ class DetailMovieVC: UIViewController {
     var id: String?
     var navigationTitle: String?
     var comments = [Comment]()
-    var movie:MovieDetail?
+    var movie: MovieDetail?
     @IBOutlet var tableView: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -25,51 +26,62 @@ class DetailMovieVC: UIViewController {
         tableView.rowHeight = UITableView.automaticDimension
     }
     
-    func fetchData(){
-        if let movie_id = self.id {
-            MovieListAPI.shared.getJsonFromUrlWithMoiveId(movieId: movie_id) { [weak self] (CommentList, error) in
-                guard let `self` = self else {return}
+    func fetchData() {
+        if let movieId = self.id {
+            let movieUrlString = "comments?movie_id=" + "\(movieId)"
+            MovieListAPI.shared.getJsonFromUrl(movieUrlString) { [weak self] (CommentList: CommentList?, error: Error?) in
                 if error != nil {
                     let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
                     let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
+                    
                     alter.addAction(action)
-                    self.present(alter, animated: true, completion: nil)
+                    
+                    self?.present(alter, animated: true, completion: nil)
                 }
-                guard let CommentList = CommentList else {return}
-                self.comments = CommentList.comments
+                
+                guard let CommentList = CommentList else { return }
+                self?.comments = CommentList.comments
                 
                 DispatchQueue.main.async {
-                    self.tableView.reloadData()
+                    self?.tableView.reloadData()
                 }
             }
             
-            MovieListAPI.shared.getJsonFromUrlMovieDetail(movieId: movie_id) { [weak self] (MovieDetail, error) in
-                guard let `self` = self else {return}
+            let movieDetailUrlString = "movie?id=" + "\(movieId)"
+            MovieListAPI.shared.getJsonFromUrl(movieDetailUrlString) { [weak self] (MovieDetail: MovieDetail?, error: Error?) in
                 if error != nil {
                     let alter = UIAlertController(title: "네트워크 장애", message: "네트워크 신호가 불안정 합니다.", preferredStyle: UIAlertController.Style.alert)
                     let action = UIAlertAction(title: "확인", style: UIAlertAction.Style.default, handler: nil)
+                    
                     alter.addAction(action)
-                    self.present(alter, animated: true, completion: nil)
+                    
+                    self?.present(alter, animated: true, completion: nil)
                 }
                 
-                guard let MovieDetail = MovieDetail else {return}
-                self.movie = MovieDetail
+                guard let MovieDetail = MovieDetail else { return }
+                self?.movie = MovieDetail
             
                 DispatchQueue.main.async {
-                    self.tableView.reloadData()
+                    self?.tableView.reloadData()
                 }
             }
         }
     }
 
-    @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer)
-    {
-        let tappedImage = tapGestureRecognizer.view as! UIImageView
-        let showVC = self.storyboard?.instantiateViewController(withIdentifier: "MovieFullImageVC") as! MovieFullImageVC
+    @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+        guard let tappedImage = tapGestureRecognizer.view as? UIImageView else {
+            return
+        }
+        
+        guard let showVC = self.storyboard?.instantiateViewController(withIdentifier: "MovieFullImageVC") as? MovieFullImageVC else {
+            return
+        }
+        
         self.present(showVC, animated: false) {
             showVC.fullScreen.image = tappedImage.image
         }
     }
+    
     func setupNavigation() {
         navigationItem.title = navigationTitle
     }
@@ -80,12 +92,13 @@ extension DetailMovieVC: UITableViewDelegate {
         if indexPath.section == 0 {
             return 240
         //줄거리 길이에 따라 섹션 height 수정하기
-        }else if indexPath.section == 1{
+        } else if indexPath.section == 1 {
             return UITableView.automaticDimension
-        }else {
+        } else {
             return 120
         }
     }
+    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 3
     }
@@ -105,23 +118,29 @@ extension DetailMovieVC: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
             return 1
-        }else if section == 1 {
+        } else if section == 1 {
             return 1
-        }else {
+        } else {
             return self.comments.count
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
-            let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId") as! DetailViewPosterCell
+            guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId") as? DetailViewPosterCell else {
+                return UITableViewCell()
+            }
+            
             let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
             
             cell.poster.isUserInteractionEnabled = true
             cell.poster.addGestureRecognizer(tapGestureRecognizer)
             
             if let movie = self.movie {
-                let url = URL(string: movie.image)!
+                guard let url = URL(string: movie.image) else {
+                    return UITableViewCell()
+                }
+                
                 cell.poster.image = UIImage(named: "cinema")
                 cell.poster.load(url: url)
                 cell.title.text = movie.title
@@ -136,16 +155,25 @@ extension DetailMovieVC: UITableViewDataSource{
                 cell.user_rating.sizeToFit()
                 cell.audience.text = "\(movie.audience)"
             }
+            
             return cell
-        }else if indexPath.section == 1{
-            let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId1") as! DetailViewContentsCell
+        } else if indexPath.section == 1 {
+            guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId1") as? DetailViewContentsCell else {
+                return UITableViewCell()
+            }
+            
             cell.content.text = self.movie?.synopsis
             cell.content.isScrollEnabled = false
             cell.content.isEditable = false
+            
             return cell
-        }else {
-            let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId2") as! DetailViewCommentCell
+        } else {
+            guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellId2") as? DetailViewCommentCell else {
+                return UITableViewCell()
+            }
+            
             let comment = self.comments[indexPath.row]
+            
             cell.writer.text = comment.writer
             cell.writer.sizeToFit()
             //cell.rating.text = "\(comment.rating)"
@@ -217,6 +245,7 @@ extension DetailMovieVC: UITableViewDataSource{
                 default:
                     break
             }
+            
             cell.timestamp.text = "\(strDate)"
             cell.timestamp.sizeToFit()
             cell.contents.text = comment.contents

@@ -14,8 +14,8 @@ struct CommentList: Decodable {
 }
 
 struct Comment: Decodable {
-    let rating:Double
-    let timestamp:Double
+    let rating: Double
+    let timestamp: Double
     let writer: String
     let movie_id: String
     let contents: String

@@ -23,6 +23,7 @@ class MovieFullImageVC: UIViewController {
         
         self.navigationController?.navigationBar.isHidden = true
     }
+    
     override var prefersStatusBarHidden: Bool {
         return true
     }
@@ -31,4 +32,5 @@ class MovieFullImageVC: UIViewController {
     @objc func tapScreen(_ sender: UITapGestureRecognizer) {
         dismiss(animated: true, completion: nil)
     }
+    
 }

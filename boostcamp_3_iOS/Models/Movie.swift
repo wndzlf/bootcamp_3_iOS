@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct MovieList:Decodable {
+struct MovieList: Decodable {
     let order_type: Int
     let movies: [Movie]
 }
